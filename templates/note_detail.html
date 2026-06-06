@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+body{
+    background:linear-gradient(rgba(2,9,22,0.92),rgba(2,9,22,0.92)),url('/static/images/brain3.jpeg');
+    background-size:cover;
+    background-position:center;
+    min-height:100vh;
+    color:white;
+    transition:0.3s;
+}
+
+body.light-mode{ background:#f0f4f8; color:#333; }
+
+nav{
+    width:100%;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+body.light-mode nav{ background:rgba(255,255,255,0.9); border-bottom:1px solid #ddd; }
+
+.nav-left{ display:flex; align-items:center; gap:14px; }
+
+.back-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 24px;
+    border:none;
+    border-radius:14px;
+    background:rgba(0,229,255,0.1);
+    border:1px solid rgba(0,229,255,0.25);
+    color:#00eaff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    text-decoration:none;
+}
+
+body.light-mode .back-btn{ background:rgba(0,102,204,0.08); border-color:rgba(0,102,204,0.2); color:#0066cc; }
+.back-btn:hover{ transform:translateY(-2px); background:rgba(0,229,255,0.18); }
+
+.dashboard-btn{
+    padding:12px 28px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+    text-decoration:none;
+    display:inline-block;
+    box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+}
+
+.dashboard-btn:hover{ transform:translateY(-3px); box-shadow:0px 0px 28px rgba(0,255,255,0.45); }
+
+.theme-toggle{
+    padding:10px 16px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+body.light-mode .theme-toggle{ border-color:#ccc; background:#fff; color:#333; }
+
+/* CONTAINER */
+.container{
+    width:70%;
+    margin:50px auto;
+}
+
+/* FILE HERO */
+.file-hero{
+    background:rgba(8,18,35,0.88);
+    border-radius:24px;
+    padding:32px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-top:3px solid #00e5ff;
+    backdrop-filter:blur(10px);
+    display:flex;
+    align-items:center;
+    gap:24px;
+    margin-bottom:36px;
+    box-shadow:0px 0px 30px rgba(0,255,255,0.12);
+}
+
+body.light-mode .file-hero{ background:#fff; border:1px solid #ddd; border-top:3px solid #0066cc; box-shadow:0px 0px 30px rgba(0,0,0,0.08); }
+
+.file-hero-icon{ font-size:72px; }
+
+.file-hero-info h2{
+    font-size:28px;
+    font-weight:700;
+    color:white;
+    margin-bottom:8px;
+    word-break:break-word;
+}
+
+body.light-mode .file-hero-info h2{ color:#333; }
+
+.file-hero-info p{
+    color:#7fdfff;
+    font-size:15px;
+}
+
+body.light-mode .file-hero-info p{ color:#0066cc; }
+
+/* ACTION BUTTONS GRID */
+.actions-title{
+    color:#00eaff;
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:20px;
+    letter-spacing:1px;
+}
+
+body.light-mode .actions-title{ color:#0066cc; }
+
+.actions-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.action-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:28px 20px;
+    border-radius:20px;
+    text-decoration:none;
+    color:white;
+    font-weight:700;
+    font-size:18px;
+    transition:0.35s;
+    border:none;
+    cursor:pointer;
+}
+
+.action-btn:hover{ transform:translateY(-6px); }
+
+.action-btn .btn-icon{ font-size:36px; }
+
+.open-btn{ background:linear-gradient(135deg,#00e5ff,#0066ff); box-shadow:0px 0px 25px rgba(0,229,255,0.28); }
+.summary-btn{ background:linear-gradient(135deg,#8a2be2,#4b0082); box-shadow:0px 0px 25px rgba(138,43,226,0.28); }
+.flashcard-btn{ background:linear-gradient(135deg,#ff9800,#ff5722); box-shadow:0px 0px 25px rgba(255,152,0,0.28); }
+.quiz-btn{ background:linear-gradient(135deg,#00c853,#009624); box-shadow:0px 0px 25px rgba(0,200,83,0.28); }
+.chat-btn{ background:linear-gradient(135deg,#ff1744,#ff4081); box-shadow:0px 0px 25px rgba(255,23,68,0.28); }
+
+.delete-btn{
+    background:linear-gradient(135deg,#333,#555);
+    box-shadow:0px 0px 20px rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1) !important;
+    color:white;
+}
+
+.delete-btn:hover{
+    background:linear-gradient(135deg,#ff1744,#c62828) !important;
+    box-shadow:0px 0px 25px rgba(255,23,68,0.28) !important;
+}
+
+@media(max-width:900px){
+    nav{ padding:16px 20px; }
+    .container{ width:92%; }
+    .actions-grid{ grid-template-columns:repeat(2,1fr); }
+    .file-hero-info h2{ font-size:22px; }
+}
+
+@media(max-width:600px){
+    nav{ padding:12px 16px; }
+    .container{ width:95%; }
+    .actions-grid{ grid-template-columns:1fr; }
+    .file-hero{ flex-direction:column; text-align:center; }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-left">
+        <a href="/my_notes" class="back-btn">← Back to Notes</a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <a href="/dashboard" class="dashboard-btn">🏠 Dashboard</a>
+</nav>
+
+<div class="container">
+
+    <!-- FILE HERO -->
+    <div class="file-hero" id="fileHero">
+        <div class="file-hero-icon" id="fileIcon">📄</div>
+        <div class="file-hero-info">
+            <h2 id="fileTitle">Loading...</h2>
+            <p id="fileDate">Uploaded: —</p>
+        </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions-title">⚡ What do you want to do?</div>
+
+    <div class="actions-grid" id="actionsGrid">
+        <!-- Filled by JS -->
+    </div>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from "/static/firebase.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    collection, query, where, getDocs, deleteDoc, doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Get filename from URL
+const pathParts = window.location.pathname.split('/');
+const filename = decodeURIComponent(pathParts[pathParts.length - 1]);
+
+// Get stored info from sessionStorage
+const noteId = sessionStorage.getItem("noteId");
+const uploadedAt = sessionStorage.getItem("noteUploadedAt") || "Recently uploaded";
+
+function getFileIcon(filename){
+    const ext = filename.split('.').pop().toLowerCase();
+    if(ext === 'pdf') return '📕';
+    if(['ppt','pptx'].includes(ext)) return '📊';
+    if(['doc','docx'].includes(ext)) return '📄';
+    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+    return '📄';
+}
+
+function getBorderColor(filename){
+    const ext = filename.split('.').pop().toLowerCase();
+    if(ext === 'pdf') return '#00e5ff';
+    if(['ppt','pptx'].includes(ext)) return '#ffb300';
+    if(['doc','docx'].includes(ext)) return '#b07fff';
+    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return '#00e676';
+    return '#00e5ff';
+}
+
+// SET FILE INFO
+document.getElementById("fileTitle").textContent = filename;
+document.getElementById("fileDate").textContent = "📅 Uploaded: " + uploadedAt;
+document.getElementById("fileIcon").textContent = getFileIcon(filename);
+document.getElementById("fileHero").style.borderTopColor = getBorderColor(filename);
+
+// BUILD ACTION BUTTONS
+const actionsGrid = document.getElementById("actionsGrid");
+actionsGrid.innerHTML = `
+    <a href="/uploads/${filename}" target="_blank" class="action-btn open-btn">
+        <span class="btn-icon">🚀</span>
+        <span>Open File</span>
+    </a>
+    <a href="/summary/${filename}" class="action-btn summary-btn">
+        <span class="btn-icon">🤖</span>
+        <span>AI Summary</span>
+    </a>
+    <a href="/flashcards/${filename}" class="action-btn flashcard-btn">
+        <span class="btn-icon">🎴</span>
+        <span>Flashcards</span>
+    </a>
+    <a href="/quiz/${filename}" class="action-btn quiz-btn">
+        <span class="btn-icon">🎯</span>
+        <span>Quiz</span>
+    </a>
+    <a href="/chat/${filename}" class="action-btn chat-btn">
+        <span class="btn-icon">💬</span>
+        <span>AI Chat</span>
+    </a>
+    <button class="action-btn delete-btn" onclick="deleteNote()">
+        <span class="btn-icon">🗑️</span>
+        <span>Delete</span>
+    </button>
+`;
+
+// AUTH CHECK
+onAuthStateChanged(auth, (user) => {
+    if(!user){ window.location.href = "/login"; }
+});
+
+// DELETE NOTE
+window.deleteNote = async function(){
+    const confirm = window.confirm(`Delete "${filename}"?\nThis will remove it from your notes.`);
+    if(!confirm) return;
+
+    try{
+        if(noteId){
+            await deleteDoc(doc(db, "notes", noteId));
+        }
+        sessionStorage.removeItem("noteId");
+        sessionStorage.removeItem("noteFilename");
+        sessionStorage.removeItem("noteUploadedAt");
+        window.location.href = "/my_notes";
+    } catch(err){
+        alert("Error deleting file. Try again.");
+        console.error(err);
+    }
+}
+
+// TOGGLE THEME
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+}
+
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light") document.body.classList.add("light-mode");
+});
+
+</script>
+</body>
+</html>

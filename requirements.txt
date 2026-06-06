@@ -1,0 +1,8 @@
+Flask==3.0.0
+PyPDF2==4.0.1
+groq==0.4.2
+python-dotenv==1.0.0
+openai-whisper==20231117
+markdown==3.5.1
+Werkzeug==3.0.1
+gunicorn==21.2.0

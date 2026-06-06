@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+body{
+    background:linear-gradient(rgba(2,9,22,0.92),rgba(2,9,22,0.92)),url('/static/images/brain3.jpeg');
+    background-size:cover;
+    background-position:center;
+    min-height:100vh;
+    color:white;
+    transition:0.3s;
+}
+
+body.light-mode{ background:#f0f4f8; color:#333; }
+
+nav{
+    width:100%;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+body.light-mode nav{ background:rgba(255,255,255,0.9); border-bottom:1px solid #ddd; }
+
+.nav-left{ display:flex; align-items:center; gap:14px; }
+
+.theme-toggle{
+    padding:10px 16px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+body.light-mode .theme-toggle{ border-color:#ccc; background:#fff; color:#333; }
+.theme-toggle:hover{ transform:scale(1.05); }
+
+.logo{ display:flex; align-items:center; gap:14px; }
+
+.logo-icon{
+    width:50px; height:50px; border-radius:50%;
+    display:flex; justify-content:center; align-items:center;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    font-size:24px;
+    box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+}
+
+.logo h1{ color:#00eaff; font-size:34px; }
+body.light-mode .logo h1{ color:#0066cc; }
+
+.back-btn{
+    padding:12px 28px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+    text-decoration:none;
+    display:inline-block;
+    box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+}
+
+body.light-mode .back-btn{ background:linear-gradient(135deg,#0066cc,#003d99); }
+.back-btn:hover{ transform:translateY(-3px); box-shadow:0px 0px 28px rgba(0,255,255,0.45); }
+
+.title{
+    text-align:center;
+    font-size:52px;
+    color:#00eaff;
+    margin-bottom:30px;
+    text-shadow:0px 0px 20px rgba(0,255,255,0.3);
+}
+
+body.light-mode .title{ color:#0066cc; text-shadow:none; }
+
+.search-wrap{ width:60%; margin:0 auto 40px auto; }
+
+.search-wrap input{
+    width:100%;
+    padding:16px 24px;
+    border-radius:14px;
+    border:1px solid rgba(0,255,255,0.2);
+    background:#06101f;
+    color:white;
+    font-size:16px;
+    font-family:'Poppins',sans-serif;
+    outline:none;
+    transition:0.3s;
+}
+
+.search-wrap input:focus{ border-color:cyan; box-shadow:0 0 18px rgba(0,255,255,0.2); }
+.search-wrap input::placeholder{ color:#4a6080; }
+body.light-mode .search-wrap input{ background:#fff; border-color:#ccc; color:#333; }
+
+.loading-msg{
+    text-align:center; color:#00e5ff; font-size:20px;
+    margin:40px 0; animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+.empty-msg{ text-align:center; color:#4a6080; font-size:20px; margin:60px 0; }
+.empty-msg a{ color:#00eaff; text-decoration:none; font-weight:600; }
+
+/* GRID — 3 cards per row */
+.notes-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+}
+
+/* NOTE CARD */
+.note-card{
+    background:rgba(8,18,35,0.88);
+    border-radius:20px;
+    padding:24px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-top:3px solid #00e5ff;
+    transition:0.35s;
+    backdrop-filter:blur(10px);
+    cursor:pointer;
+    box-shadow:0px 0px 20px rgba(0,255,255,0.08);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+body.light-mode .note-card{ background:#fff; border:1px solid #ddd; border-top:3px solid #0066cc; box-shadow:0px 0px 20px rgba(0,0,0,0.08); }
+
+.note-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0px 0px 30px rgba(0,255,255,0.28);
+    border-color:rgba(0,255,255,0.35);
+    border-top-color:#00e5ff;
+}
+
+body.light-mode .note-card:hover{ box-shadow:0px 0px 30px rgba(0,0,0,0.12); border-color:#bbb; }
+
+.note-icon-wrap{ font-size:48px; }
+
+.filename{
+    font-size:17px;
+    font-weight:600;
+    color:white;
+    word-break:break-word;
+    line-height:1.4;
+}
+
+body.light-mode .filename{ color:#333; }
+
+.file-info{ color:#7fdfff; font-size:13px; }
+body.light-mode .file-info{ color:#0066cc; }
+
+/* EXPLORE HINT */
+.explore-hint{
+    margin-top:auto;
+    background:rgba(0,229,255,0.08);
+    border:1px solid rgba(0,229,255,0.2);
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+    color:#00eaff;
+    font-size:13px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+body.light-mode .explore-hint{ background:rgba(0,102,204,0.06); border-color:rgba(0,102,204,0.2); color:#0066cc; }
+.note-card:hover .explore-hint{ background:rgba(0,229,255,0.15); }
+
+@media(max-width:900px){
+    nav{ padding:16px 20px; }
+    .back-btn{ padding:10px 16px; font-size:14px; }
+    .notes-grid{ grid-template-columns:repeat(2,1fr); }
+    .search-wrap{ width:100%; }
+}
+
+@media(max-width:600px){
+    nav{ padding:12px 16px; gap:8px; }
+    .back-btn{ padding:8px 12px; font-size:12px; white-space:nowrap; }
+    .logo h1{ font-size:20px; }
+    .title{ font-size:32px; }
+    .notes-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-left">
+        <div class="logo">
+            <div class="logo-icon">📚</div>
+            <h1>My Notes</h1>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <a href="/dashboard" class="back-btn">🏠 Dashboard</a>
+</nav>
+
+<div class="container" style="width:92%;margin:50px auto;">
+
+    <h2 class="title">Uploaded Notes</h2>
+
+    <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="🔍 Search your notes..."/>
+    </div>
+
+    <div id="loadingMsg" class="loading-msg">🔄 Loading your notes...</div>
+
+    <div id="emptyMsg" class="empty-msg" style="display:none;">
+        📭 No notes uploaded yet.<br><br>
+        <a href="/upload_notes">Upload your first file →</a>
+    </div>
+
+    <div id="notesGrid" class="notes-grid"></div>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from "/static/firebase.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    collection, query, where, getDocs, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let allNotes = [];
+
+onAuthStateChanged(auth, async (user) => {
+    if(!user){ window.location.href = "/login"; return; }
+    await loadNotes(user.uid);
+});
+
+function getFileIcon(filename){
+    const ext = filename.split('.').pop().toLowerCase();
+    if(ext === 'pdf') return '📕';
+    if(['ppt','pptx'].includes(ext)) return '📊';
+    if(['doc','docx'].includes(ext)) return '📄';
+    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+    return '📄';
+}
+
+function getBorderColor(filename){
+    const ext = filename.split('.').pop().toLowerCase();
+    if(ext === 'pdf') return '#00e5ff';
+    if(['ppt','pptx'].includes(ext)) return '#ffb300';
+    if(['doc','docx'].includes(ext)) return '#b07fff';
+    if(['jpg','jpeg','png','gif','webp'].includes(ext)) return '#00e676';
+    return '#00e5ff';
+}
+
+async function loadNotes(userId){
+    const grid = document.getElementById("notesGrid");
+    const loading = document.getElementById("loadingMsg");
+    const empty = document.getElementById("emptyMsg");
+
+    try{
+        const q = query(
+            collection(db, "notes"),
+            where("userId", "==", userId),
+            orderBy("uploadedAt", "desc")
+        );
+        const snapshot = await getDocs(q);
+        loading.style.display = "none";
+
+        if(snapshot.empty){ empty.style.display = "block"; return; }
+
+        allNotes = [];
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            allNotes.push({ id: docSnap.id, ...data });
+        });
+
+        renderNotes(allNotes);
+
+    } catch(err){
+        loading.style.display = "none";
+        console.error("Error loading notes:", err);
+        grid.innerHTML = `<div class="empty-msg">❌ Error loading notes. Try refreshing.</div>`;
+    }
+}
+
+function renderNotes(notes){
+    const grid = document.getElementById("notesGrid");
+    const empty = document.getElementById("emptyMsg");
+
+    if(notes.length === 0){
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        return;
+    }
+
+    empty.style.display = "none";
+    grid.innerHTML = "";
+
+    notes.forEach((data) => {
+        const docId = data.id;
+        const filename = data.filename;
+        const icon = getFileIcon(filename);
+        const borderColor = getBorderColor(filename);
+
+        const uploadedAt = data.uploadedAt
+            ? new Date(data.uploadedAt.seconds * 1000).toLocaleDateString()
+            : "Recently uploaded";
+
+        const card = document.createElement("div");
+        card.className = "note-card";
+        card.id = `card-${docId}`;
+        card.style.borderTopColor = borderColor;
+
+        card.innerHTML = `
+            <div class="note-icon-wrap">${icon}</div>
+            <div class="filename">${filename}</div>
+            <div class="file-info">📅 Uploaded: ${uploadedAt}</div>
+            <div class="explore-hint">Click to explore →</div>
+        `;
+
+        // Click → go to note detail page
+        card.addEventListener("click", () => {
+            // Store note info in sessionStorage for detail page
+            sessionStorage.setItem("noteId", docId);
+            sessionStorage.setItem("noteFilename", filename);
+            sessionStorage.setItem("noteUploadedAt", uploadedAt);
+            window.location.href = `/note_detail/${encodeURIComponent(filename)}`;
+        });
+
+        grid.appendChild(card);
+    });
+}
+
+// SEARCH
+document.getElementById("searchInput").addEventListener("input", function(){
+    const searchVal = this.value.toLowerCase();
+
+    if(!searchVal){ renderNotes(allNotes); return; }
+
+    const filtered = allNotes.filter(n => n.filename.toLowerCase().includes(searchVal));
+
+    if(filtered.length === 0){
+        document.getElementById("notesGrid").innerHTML = "";
+        const emptyMsg = document.getElementById("emptyMsg");
+        emptyMsg.style.display = "block";
+        emptyMsg.innerHTML = `🔍 No notes found for "<strong style="color:#00eaff">${searchVal}</strong>"`;
+    } else {
+        document.getElementById("emptyMsg").style.display = "none";
+        renderNotes(filtered);
+    }
+});
+
+// TOGGLE THEME
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+}
+
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light") document.body.classList.add("light-mode");
+});
+
+</script>
+</body>
+</html>

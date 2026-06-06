@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Brain Byte Login</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='login.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+        <!-- LOGO -->
+        <div class="logo">
+
+            <div class="logo-icon">
+                💡
+            </div>
+
+            <h1>Brain Byte</h1>
+
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form>
+
+            <!-- EMAIL -->
+            <div class="input-box">
+
+                <span class="icon">
+                    ✉️
+                </span>
+
+                <input
+                type="email"
+                placeholder="Enter Email"
+                autocomplete="email"
+                required>
+
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="input-box">
+
+                <span class="icon">
+                    🔒
+                </span>
+
+                <input
+                type="password"
+                placeholder="Enter Password"
+                autocomplete="current-password"
+                required>
+
+            </div>
+
+            <!-- LOGIN BUTTON -->
+            <button
+            class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <!-- OR -->
+        <div class="or">
+
+            <div class="line"></div>
+
+            <span>OR</span>
+
+            <div class="line"></div>
+
+        </div>
+
+        <!-- GOOGLE LOGIN -->
+        <button class="google-btn">
+
+            <img
+            src="https://cdn-icons-png.flaticon.com/512/281/281764.png">
+
+            Continue with Google
+
+        </button>
+
+        <!-- SIGNUP -->
+        <p class="signup-text">
+
+            Don't have an account?
+
+            <a href="/signup">
+                Sign Up
+            </a>
+
+        </p>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <img
+        src="{{ url_for('static', filename='images/brain3.jpeg') }}"
+        class="brain-image">
+
+        <h2>
+
+            Split the Brain.<br>
+
+            <span>
+                Unlock Your Best.
+            </span>
+
+        </h2>
+
+        <a href="/signup"
+        class="create-btn">
+
+            Create New Account →
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- FIREBASE LOGIN -->
+<script type="module">
+
+import {
+    auth,
+    provider,
+    signInWithEmailAndPassword,
+    signInWithPopup
+} from "/static/firebase.js";
+
+/* EMAIL LOGIN */
+const loginBtn =
+document.querySelector(".login-btn");
+
+loginBtn.addEventListener(
+"click",
+
+async function(e){
+
+    e.preventDefault();
+
+    const email =
+    document.querySelector(
+    'input[type="email"]'
+    ).value;
+
+    const password =
+    document.querySelector(
+    'input[type="password"]'
+    ).value;
+
+    try{
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        alert(
+            "Login Successful ✅"
+        );
+
+        window.location.href =
+        "/dashboard";
+
+    }
+
+    catch(error){
+
+        alert(
+            "Invalid Email or Password"
+        );
+
+    }
+
+});
+
+/* GOOGLE LOGIN */
+const googleBtn =
+document.querySelector(".google-btn");
+
+googleBtn.addEventListener(
+"click",
+
+async function(){
+
+    try{
+
+        await signInWithPopup(
+            auth,
+            provider
+        );
+
+        alert(
+            "Google Login Successful ✅"
+        );
+
+        window.location.href =
+        "/dashboard";
+
+    }
+
+    catch(error){
+
+        alert(error.message);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

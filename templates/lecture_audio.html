@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Audio</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background: linear-gradient(rgba(2,9,22,0.92), rgba(2,9,22,0.92)), url('/static/images/brain3.jpeg');
+            background-size:cover;
+            background-position:center;
+            min-height:100vh;
+            color:white;
+            transition:0.3s;
+        }
+
+        body.light-mode{
+            background:#f0f4f8;
+            color:#333;
+        }
+
+        nav{
+            width:100%;
+            padding:20px 60px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            background:rgba(0,0,0,0.35);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid rgba(255,255,255,0.08);
+        }
+
+        body.light-mode nav{
+            background:rgba(255,255,255,0.9);
+            border-bottom:1px solid #ddd;
+        }
+
+        .nav-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .logo-icon{
+            width:50px;
+            height:50px;
+            border-radius:50%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            font-size:24px;
+            box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+        }
+
+        .logo h1{
+            color:#00eaff;
+            font-size:34px;
+        }
+
+        body.light-mode .logo h1{
+            color:#0066cc;
+        }
+
+        .theme-toggle{
+            padding:10px 16px;
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,0.2);
+            background:rgba(255,255,255,0.08);
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        body.light-mode .theme-toggle{
+            border-color:#ccc;
+            background:#fff;
+            color:#333;
+        }
+
+        .theme-toggle:hover{
+            transform:scale(1.05);
+        }
+
+        .back-btn{
+            padding:12px 28px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            color:white;
+            font-size:16px;
+            font-weight:700;
+            cursor:pointer;
+            transition:0.3s;
+            text-decoration:none;
+            display:inline-block;
+            box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+        }
+
+        body.light-mode .back-btn{
+            background:linear-gradient(135deg,#0066cc,#003d99);
+        }
+
+        .back-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0px 0px 28px rgba(0,255,255,0.45);
+        }
+
+        .container{
+            width:92%;
+            max-width:1200px;
+            margin:40px auto;
+        }
+
+        .title{
+            text-align:center;
+            font-size:52px;
+            color:#00eaff;
+            margin-bottom:40px;
+            text-shadow:0px 0px 20px rgba(0,255,255,0.3);
+        }
+
+        body.light-mode .title{
+            color:#0066cc;
+            text-shadow:none;
+        }
+
+        /* UPLOAD SECTION */
+        .upload-section{
+            background:rgba(5,15,30,0.88);
+            border-radius:28px;
+            padding:50px;
+            text-align:center;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+            backdrop-filter:blur(10px);
+            transition:0.35s;
+            margin-bottom:40px;
+        }
+
+        body.light-mode .upload-section{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+        }
+
+        .upload-section:hover{
+            transform:translateY(-6px);
+            box-shadow:0px 0px 40px rgba(0,255,255,0.25);
+        }
+
+        .upload-section h2{
+            font-size:36px;
+            color:#00eaff;
+            margin-bottom:16px;
+            font-weight:700;
+        }
+
+        body.light-mode .upload-section h2{
+            color:#0066cc;
+        }
+
+        .upload-section p{
+            color:#cfd9e6;
+            margin-bottom:30px;
+            font-size:16px;
+        }
+
+        body.light-mode .upload-section p{
+            color:#666;
+        }
+
+        .file-input-wrapper{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            margin-bottom:30px;
+        }
+
+        input[type="file"]{
+            width:100%;
+            max-width:400px;
+            padding:18px;
+            border-radius:14px;
+            background:#08111f;
+            color:white;
+            border:2px dashed rgba(0,255,255,0.3);
+            font-family:'Poppins',sans-serif;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        body.light-mode input[type="file"]{
+            background:#f5f5f5;
+            color:#333;
+            border-color:#ccc;
+        }
+
+        input[type="file"]:hover{
+            border-color:rgba(0,255,255,0.6);
+        }
+
+        .upload-btn{
+            width:100%;
+            max-width:400px;
+            padding:16px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            color:white;
+            font-size:18px;
+            font-weight:600;
+            font-family:'Poppins',sans-serif;
+            cursor:pointer;
+            transition:0.3s;
+            box-shadow:0px 0px 20px rgba(0,255,255,0.25);
+        }
+
+        body.light-mode .upload-btn{
+            background:linear-gradient(135deg,#0066cc,#003d99);
+        }
+
+        .upload-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0px 0px 28px rgba(0,255,255,0.45);
+        }
+
+        .upload-btn:disabled{
+            opacity:0.6;
+            cursor:not-allowed;
+        }
+
+        .loading-spinner{
+            display:none;
+            text-align:center;
+            margin:30px 0;
+        }
+
+        .spinner{
+            border:4px solid rgba(0,255,255,0.2);
+            border-top:4px solid #00eaff;
+            border-radius:50%;
+            width:40px;
+            height:40px;
+            animation:spin 1s linear infinite;
+            margin:0 auto;
+        }
+
+        @keyframes spin{
+            0%{ transform:rotate(0deg); }
+            100%{ transform:rotate(360deg); }
+        }
+
+        .status-msg{
+            text-align:center;
+            margin:20px 0;
+            font-size:16px;
+            color:#00eaff;
+        }
+
+        /* TRANSCRIPTION SECTION */
+        .transcription-section{
+            background:rgba(5,15,30,0.88);
+            border-radius:28px;
+            padding:40px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+            backdrop-filter:blur(10px);
+            margin-bottom:40px;
+            display:none;
+        }
+
+        body.light-mode .transcription-section{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+        }
+
+        .transcription-section h3{
+            color:#00eaff;
+            font-size:24px;
+            margin-bottom:20px;
+            font-weight:700;
+        }
+
+        body.light-mode .transcription-section h3{
+            color:#0066cc;
+        }
+
+        .transcription-text{
+            background:rgba(0,0,0,0.3);
+            padding:20px;
+            border-radius:14px;
+            color:#d8e3f0;
+            line-height:1.8;
+            margin-bottom:30px;
+            max-height:300px;
+            overflow-y:auto;
+        }
+
+        body.light-mode .transcription-text{
+            background:#f5f5f5;
+            color:#333;
+        }
+
+        .detected-language{
+            color:#7fdfff;
+            font-size:14px;
+            margin-top:10px;
+        }
+
+        /* CHOICE SECTION */
+        .choice-section{
+            background:rgba(5,15,30,0.88);
+            border-radius:28px;
+            padding:40px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+            backdrop-filter:blur(10px);
+            margin-bottom:40px;
+            display:none;
+            text-align:center;
+        }
+
+        body.light-mode .choice-section{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+        }
+
+        .choice-section h3{
+            color:#00eaff;
+            font-size:28px;
+            margin-bottom:30px;
+            font-weight:700;
+        }
+
+        body.light-mode .choice-section h3{
+            color:#0066cc;
+        }
+
+        .choice-buttons{
+            display:flex;
+            gap:20px;
+            justify-content:center;
+            flex-wrap:wrap;
+        }
+
+        .choice-btn{
+            padding:18px 40px;
+            border:none;
+            border-radius:16px;
+            font-size:18px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            text-decoration:none;
+            color:white;
+        }
+
+        .choice-btn:hover{
+            transform:translateY(-3px);
+        }
+
+        .summary-choice{
+            background:linear-gradient(135deg,#8a2be2,#4b0082);
+            box-shadow:0px 0px 20px rgba(138,43,226,0.28);
+        }
+
+        .summary-choice:hover{
+            box-shadow:0px 0px 28px rgba(138,43,226,0.45);
+        }
+
+        .flashcard-choice{
+            background:linear-gradient(135deg,#ff9800,#ff5722);
+            box-shadow:0px 0px 20px rgba(255,152,0,0.28);
+        }
+
+        .flashcard-choice:hover{
+            box-shadow:0px 0px 28px rgba(255,152,0,0.45);
+        }
+
+        /* SUMMARY SECTION */
+        .summary-section{
+            background:rgba(5,15,30,0.88);
+            border-radius:28px;
+            padding:40px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+            backdrop-filter:blur(10px);
+            margin-bottom:40px;
+            display:none;
+        }
+
+        body.light-mode .summary-section{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+        }
+
+        .summary-section h3{
+            color:#00eaff;
+            font-size:24px;
+            margin-bottom:20px;
+            font-weight:700;
+        }
+
+        body.light-mode .summary-section h3{
+            color:#0066cc;
+        }
+
+        .summary-content{
+            background:rgba(0,0,0,0.2);
+            padding:30px;
+            border-radius:14px;
+            color:#d8e3f0;
+            line-height:1.9;
+            margin-bottom:20px;
+        }
+
+        body.light-mode .summary-content{
+            background:#f5f5f5;
+            color:#333;
+        }
+
+        .summary-content h2{
+            color:#00eaff;
+            margin-top:20px;
+            margin-bottom:10px;
+        }
+
+        body.light-mode .summary-content h2{
+            color:#0066cc;
+        }
+
+        .summary-content ul, .summary-content ol{
+            margin-left:20px;
+            margin-top:10px;
+        }
+
+        .summary-content li{
+            margin:8px 0;
+        }
+
+        .summary-buttons{
+            display:flex;
+            gap:16px;
+            justify-content:center;
+            flex-wrap:wrap;
+        }
+
+        .copy-btn, .download-btn, .quiz-btn{
+            padding:14px 28px;
+            border:none;
+            border-radius:12px;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            color:white;
+        }
+
+        .copy-btn{
+            background:linear-gradient(135deg,#00c853,#009624);
+            box-shadow:0px 0px 18px rgba(0,200,83,0.25);
+        }
+
+        .copy-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,200,83,0.4);
+        }
+
+        .download-btn{
+            background:linear-gradient(135deg,#ff9800,#ff5722);
+            box-shadow:0px 0px 18px rgba(255,152,0,0.25);
+        }
+
+        .download-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(255,152,0,0.4);
+        }
+
+        .quiz-btn{
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+        }
+
+        .quiz-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,255,255,0.4);
+        }
+
+        /* FLASHCARD SECTION */
+        .flashcard-section{
+            display:none;
+        }
+
+        .flashcard-header{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .flashcard-header h3{
+            color:#00eaff;
+            font-size:24px;
+            margin-bottom:10px;
+            font-weight:700;
+        }
+
+        body.light-mode .flashcard-header h3{
+            color:#0066cc;
+        }
+
+        .flashcard-counter{
+            color:#7fdfff;
+            font-size:16px;
+        }
+
+        body.light-mode .flashcard-counter{
+            color:#0066cc;
+        }
+
+        .flashcard-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+            gap:28px;
+            margin-bottom:30px;
+        }
+
+        .flip-card{
+            background:rgba(5,15,30,0.88);
+            border:1px solid rgba(0,255,255,0.15);
+            border-radius:20px;
+            height:280px;
+            cursor:pointer;
+            transition:0.35s;
+            position:relative;
+            transform-style:preserve-3d;
+            backdrop-filter:blur(10px);
+            box-shadow:0px 0px 20px rgba(0,255,255,0.12);
+        }
+
+        body.light-mode .flip-card{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 20px rgba(0,0,0,0.08);
+        }
+
+        .flip-card:hover{
+            transform:translateY(-8px);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.28);
+            border:1px solid rgba(0,255,255,0.3);
+        }
+
+        .flip-card-inner{
+            position:relative;
+            width:100%;
+            height:100%;
+            transition:transform 0.6s;
+            transform-style:preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner{
+            transform:rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back{
+            position:absolute;
+            width:100%;
+            height:100%;
+            backface-visibility:hidden;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:30px;
+            text-align:center;
+            border-radius:20px;
+        }
+
+        .flip-card-front{
+            background:rgba(5,15,30,0.88);
+            color:white;
+            font-size:18px;
+            font-weight:600;
+            line-height:1.6;
+        }
+
+        body.light-mode .flip-card-front{
+            background:#fff;
+            color:#333;
+        }
+
+        .flip-card-back{
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            line-height:1.6;
+            transform:rotateY(180deg);
+        }
+
+        .card-counter{
+            position:absolute;
+            top:15px;
+            right:15px;
+            background:rgba(0,255,255,0.2);
+            color:#00eaff;
+            padding:8px 12px;
+            border-radius:8px;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        .flashcard-footer{
+            text-align:center;
+        }
+
+        .continue-btn{
+            padding:14px 40px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,#00c853,#009624);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            box-shadow:0px 0px 18px rgba(0,200,83,0.25);
+        }
+
+        .continue-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,200,83,0.4);
+        }
+
+        .error-msg{
+            color:#ff6b6b;
+            text-align:center;
+            padding:20px;
+            background:rgba(255,107,107,0.1);
+            border-radius:12px;
+            margin:20px 0;
+            border:1px solid rgba(255,107,107,0.3);
+        }
+
+        @media(max-width:768px){
+            nav{
+                flex-direction:column;
+                gap:16px;
+                padding:20px;
+            }
+
+            .logo h1{ font-size:28px; }
+            .title{ font-size:36px; }
+            .upload-section{ padding:30px 20px; }
+            .choice-buttons{ flex-direction:column; }
+            .flashcard-grid{ grid-template-columns:1fr; }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-left">
+        <div class="logo">
+            <div class="logo-icon">🎤</div>
+            <h1>Lecture Audio</h1>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <a href="/dashboard" class="back-btn">🏠 Dashboard</a>
+</nav>
+
+<div class="container">
+
+    <h2 class="title">Lecture Audio Learning</h2>
+
+    <!-- UPLOAD SECTION -->
+    <div class="upload-section">
+        <h2>🎙️ Upload Your Lecture</h2>
+        <p>Upload your lecture recording (MP3, WAV, M4A up to 50MB)</p>
+        
+        <div class="file-input-wrapper">
+            <input type="file" id="audioFile" accept="audio/*">
+        </div>
+        
+        <button class="upload-btn" onclick="uploadAudio()">
+            📤 Upload & Transcribe
+        </button>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <div class="status-msg" id="statusMsg">Processing audio...</div>
+        </div>
+
+        <div id="errorMsg" class="error-msg" style="display:none;"></div>
+    </div>
+
+    <!-- TRANSCRIPTION SECTION -->
+    <div class="transcription-section" id="transcriptionSection">
+        <h3>📝 Transcription</h3>
+        <div class="transcription-text" id="transcriptionText"></div>
+        <div class="detected-language">
+            Detected Language: <span id="detectedLanguage"></span>
+        </div>
+    </div>
+
+    <!-- CHOICE SECTION -->
+    <div class="choice-section" id="choiceSection">
+        <h3>What would you like to do?</h3>
+        <div class="choice-buttons">
+            <button class="choice-btn summary-choice" onclick="generateSummary()">
+                📖 Generate Summary
+            </button>
+            <button class="choice-btn flashcard-choice" onclick="generateFlashcards()">
+                🎴 Generate Flashcards
+            </button>
+        </div>
+    </div>
+
+    <!-- SUMMARY SECTION -->
+    <div class="summary-section" id="summarySection">
+        <h3>📚 Summary</h3>
+        <div class="summary-content" id="summaryContent"></div>
+        <div class="summary-buttons">
+            <button class="copy-btn" onclick="copySummary()">
+                ✅ Copy Summary
+            </button>
+            <button class="download-btn" onclick="downloadSummaryPDF()">
+                📥 Download PDF
+            </button>
+            <button class="quiz-btn" onclick="startQuiz()">
+                🎯 Take Quiz
+            </button>
+        </div>
+    </div>
+
+    <!-- FLASHCARD SECTION -->
+    <div class="flashcard-section" id="flashcardSection">
+        <div class="flashcard-header">
+            <h3>🎴 Flashcards</h3>
+            <div class="flashcard-counter">
+                Total: <span id="flashcardTotal">0</span> Flashcards
+            </div>
+        </div>
+        
+        <div class="flashcard-grid" id="flashcardGrid"></div>
+        
+        <div class="flashcard-footer">
+            <button class="quiz-btn" onclick="startQuiz()">
+                🎯 Take Quiz
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from "/static/firebase.js";
+
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let currentUser = null;
+let currentTranscription = "";
+let currentSummary = "";
+let currentFlashcards = [];
+let currentQuizzes = [];
+
+onAuthStateChanged(auth, (user) => {
+    if(!user){
+        window.location.href = "/login";
+    } else {
+        currentUser = user;
+    }
+});
+
+window.uploadAudio = async function(){
+    const audioFile = document.getElementById("audioFile").files[0];
+    
+    if(!audioFile){
+        alert("Please select an audio file");
+        return;
+    }
+
+    if(audioFile.size > 50 * 1024 * 1024){
+        alert("File size exceeds 50MB limit");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("audio", audioFile);
+
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("errorMsg").style.display = "none";
+
+    try{
+        const response = await fetch("/upload_lecture", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        document.getElementById("loadingSpinner").style.display = "none";
+
+        if(response.ok){
+            currentTranscription = data.transcription;
+            
+            document.getElementById("transcriptionText").textContent = currentTranscription;
+            document.getElementById("detectedLanguage").textContent = data.language.toUpperCase();
+            
+            document.getElementById("transcriptionSection").style.display = "block";
+            document.getElementById("choiceSection").style.display = "block";
+            
+            window.scrollTo({top: document.getElementById("transcriptionSection").offsetTop, behavior: "smooth"});
+        } else {
+            showError(data.error || "Failed to process audio");
+        }
+    } catch(err){
+        document.getElementById("loadingSpinner").style.display = "none";
+        showError(err.message);
+    }
+};
+
+window.generateSummary = async function(){
+    if(!currentTranscription){
+        alert("No transcription available");
+        return;
+    }
+
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("statusMsg").textContent = "Generating summary...";
+
+    try{
+        const response = await fetch("/generate_lecture_summary", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({transcription: currentTranscription})
+        });
+
+        const data = await response.json();
+        document.getElementById("loadingSpinner").style.display = "none";
+
+        if(response.ok){
+            currentSummary = data.summary;
+            
+            let formattedSummary = data.summary
+                .replace(/##/g, "<h2>")
+                .replace(/\n\n/g, "</h2><p>")
+                .replace(/\n/g, "<br>") + "</p>";
+
+            document.getElementById("summaryContent").innerHTML = formattedSummary;
+            document.getElementById("summarySection").style.display = "block";
+            document.getElementById("flashcardSection").style.display = "none";
+
+            // Save to Firestore
+            if(currentUser){
+                await addDoc(collection(db, "lecture_history"), {
+                    userId: currentUser.uid,
+                    type: "summary",
+                    content: currentSummary,
+                    transcription: currentTranscription,
+                    timestamp: serverTimestamp()
+                });
+            }
+
+            window.scrollTo({top: document.getElementById("summarySection").offsetTop, behavior: "smooth"});
+        } else {
+            showError(data.error);
+        }
+    } catch(err){
+        document.getElementById("loadingSpinner").style.display = "none";
+        showError(err.message);
+    }
+};
+
+window.generateFlashcards = async function(){
+    if(!currentTranscription){
+        alert("No transcription available");
+        return;
+    }
+
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("statusMsg").textContent = "Generating flashcards...";
+
+    try{
+        const response = await fetch("/generate_lecture_flashcards", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({transcription: currentTranscription})
+        });
+
+        const data = await response.json();
+        document.getElementById("loadingSpinner").style.display = "none";
+
+        if(response.ok){
+            currentFlashcards = data.flashcards;
+            
+            const grid = document.getElementById("flashcardGrid");
+            grid.innerHTML = "";
+
+            document.getElementById("flashcardTotal").textContent = currentFlashcards.length;
+
+            currentFlashcards.forEach((card, index) => {
+                const cardDiv = document.createElement("div");
+                cardDiv.className = "flip-card";
+                
+                cardDiv.innerHTML = `
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div>
+                                ${card.question}
+                                <div class="card-counter">${index + 1}/${currentFlashcards.length}</div>
+                            </div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div>${card.answer}</div>
+                        </div>
+                    </div>
+                `;
+
+                cardDiv.onclick = function(){
+                    this.classList.toggle("flipped");
+                };
+
+                grid.appendChild(cardDiv);
+            });
+
+            document.getElementById("flashcardSection").style.display = "block";
+            document.getElementById("summarySection").style.display = "none";
+
+            // Save to Firestore
+            if(currentUser){
+                await addDoc(collection(db, "lecture_history"), {
+                    userId: currentUser.uid,
+                    type: "flashcards",
+                    flashcards: currentFlashcards,
+                    transcription: currentTranscription,
+                    timestamp: serverTimestamp()
+                });
+            }
+
+            window.scrollTo({top: document.getElementById("flashcardSection").offsetTop, behavior: "smooth"});
+        } else {
+            showError(data.error);
+        }
+    } catch(err){
+        document.getElementById("loadingSpinner").style.display = "none";
+        showError(err.message);
+    }
+};
+
+window.startQuiz = async function(){
+    if(!currentTranscription){
+        alert("No transcription available");
+        return;
+    }
+
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("statusMsg").textContent = "Generating quiz...";
+
+    try{
+        const response = await fetch("/generate_lecture_quiz", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({transcription: currentTranscription})
+        });
+
+        const data = await response.json();
+        document.getElementById("loadingSpinner").style.display = "none";
+
+        if(response.ok){
+            currentQuizzes = data.questions;
+            
+            // Store quiz data in sessionStorage
+            sessionStorage.setItem("lectureQuiz", JSON.stringify(currentQuizzes));
+            sessionStorage.setItem("isLectureQuiz", "true");
+
+            // Redirect to quiz page
+            window.location.href = "/lecture_quiz";
+        } else {
+            showError(data.error);
+        }
+    } catch(err){
+        document.getElementById("loadingSpinner").style.display = "none";
+        showError(err.message);
+    }
+};
+
+window.copySummary = function(){
+    const text = currentSummary;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = "✅ Copied!";
+        setTimeout(() => {
+            btn.textContent = original;
+        }, 2000);
+    });
+};
+
+window.downloadSummaryPDF = async function(){
+    try{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        const lineHeight = 7;
+        let yPosition = margin;
+
+        const text = doc.splitTextToSize(currentSummary, 180);
+        
+        text.forEach(line => {
+            if(yPosition > pageHeight - margin){
+                doc.addPage();
+                yPosition = margin;
+            }
+            doc.text(line, margin, yPosition);
+            yPosition += lineHeight;
+        });
+
+        doc.save("lecture_summary.pdf");
+    } catch(err){
+        alert("Error downloading PDF. Please try again.");
+    }
+};
+
+function showError(message){
+    const errorMsg = document.getElementById("errorMsg");
+    errorMsg.textContent = "❌ " + message;
+    errorMsg.style.display = "block";
+}
+
+// TOGGLE THEME
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+}
+
+// Load theme on page load
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light"){
+        document.body.classList.add("light-mode");
+    }
+});
+
+// Load jsPDF library for PDF download
+const script = document.createElement("script");
+script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+document.head.appendChild(script);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+body{
+    margin:0;
+    padding:0;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-family:Arial, sans-serif;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.7),
+        rgba(0,0,0,0.7)
+    ),
+    url('/static/images/pg.jpg');
+
+    background-size:cover;
+    background-position:center;
+}
+
+.signup-box{
+
+    width:400px;
+
+    padding:40px;
+
+    background:rgba(0,0,0,0.75);
+
+    border-radius:20px;
+
+    box-shadow:0 0 25px cyan;
+
+    text-align:center;
+
+    color:white;
+}
+
+.logo{
+
+    font-size:32px;
+
+    font-weight:bold;
+
+    color:#00e5ff;
+
+    margin-bottom:20px;
+}
+
+.signup-box h1{
+
+    margin-bottom:30px;
+
+    color:#00e5ff;
+}
+
+.signup-box input{
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:15px;
+
+    margin:12px 0;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#111;
+
+    color:white;
+
+    font-size:16px;
+}
+
+.signup-box input:focus{
+
+    outline:none;
+
+    box-shadow:0 0 15px cyan;
+}
+
+.signup-box button{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-top:20px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:
+    linear-gradient(
+        to right,
+        #00e5ff,
+        #0066ff
+    );
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.signup-box button:hover{
+
+    transform:scale(1.03);
+
+    box-shadow:0 0 20px cyan;
+}
+
+.signup-box p{
+
+    margin-top:20px;
+}
+
+.signup-box a{
+
+    color:#00e5ff;
+
+    text-decoration:none;
+
+    font-weight:bold;
+}
+
+.signup-box a:hover{
+
+    text-shadow:0 0 10px cyan;
+}

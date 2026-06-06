@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Brain Byte Signup</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='login.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+        <!-- LOGO -->
+        <div class="logo">
+
+            <div class="logo-icon">
+                💡
+            </div>
+
+            <h1>Brain Byte</h1>
+
+        </div>
+
+        <!-- TITLE -->
+        <div style="margin-bottom:25px;">
+
+            <h2 style="
+            color:white;
+            font-size:42px;
+            margin-bottom:10px;
+            ">
+                Create Account
+            </h2>
+
+            <p style="
+            color:#9fb3c8;
+            font-size:18px;
+            ">
+                Join Brain Byte and start learning smarter.
+            </p>
+
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm">
+
+            <!-- EMAIL -->
+            <div class="input-box">
+
+                <span class="icon">
+                    ✉️
+                </span>
+
+                <input
+                type="email"
+                placeholder="Enter Email"
+                autocomplete="email"
+                required>
+
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="input-box">
+
+                <span class="icon">
+                    🔒
+                </span>
+
+                <input
+                type="password"
+                placeholder="Create Password"
+                autocomplete="new-password"
+                required>
+
+            </div>
+
+            <!-- BUTTON -->
+            <button
+            type="submit"
+            class="login-btn">
+
+                Create Account
+
+            </button>
+
+        </form>
+
+        <!-- LOGIN -->
+        <p class="signup-text">
+
+            Already have an account?
+
+            <a href="/login">
+                Login
+            </a>
+
+        </p>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <img
+        src="{{ url_for('static', filename='images/brain3.jpeg') }}"
+        class="brain-image">
+
+        <h2>
+
+            Learn Faster.<br>
+
+            <span>
+                Study Smarter.
+            </span>
+
+        </h2>
+
+        <a href="/login"
+        class="create-btn">
+
+            Back To Login →
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- FIREBASE SIGNUP -->
+<script type="module">
+
+import {
+    auth,
+    createUserWithEmailAndPassword
+} from "/static/firebase.js";
+
+const signupForm =
+document.getElementById("signupForm");
+
+signupForm.addEventListener(
+"submit",
+
+async function(e){
+
+    e.preventDefault();
+
+    const email =
+    document.querySelector(
+    'input[type="email"]'
+    ).value;
+
+    const password =
+    document.querySelector(
+    'input[type="password"]'
+    ).value;
+
+    try{
+
+        await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        alert(
+            "Account Created Successfully ✅"
+        );
+
+        window.location.href =
+        "/dashboard";
+
+    }
+
+    catch(error){
+
+        alert(error.message);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

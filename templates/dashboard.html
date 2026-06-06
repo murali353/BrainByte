@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Brain Byte Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:
+    linear-gradient(rgba(2,9,22,0.9),
+    rgba(2,9,22,0.9)),
+    url('/static/images/brain3.jpeg');
+
+    background-size:cover;
+    background-position:center;
+    color:white;
+    min-height:100vh;
+    transition:0.3s;
+}
+
+body.light-mode{
+    background:#f0f4f8;
+    color:#333;
+}
+
+/* NAVBAR */
+nav{
+    width:100%;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+body.light-mode nav{
+    background:rgba(255,255,255,0.9);
+    border-bottom:1px solid #ddd;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-icon{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    box-shadow:0px 0px 20px rgba(0,255,255,0.4);
+}
+
+.logo h1{
+    color:#00eaff;
+    font-size:38px;
+}
+
+body.light-mode .logo h1{
+    color:#0066cc;
+}
+
+/* NAV BUTTONS */
+.nav-buttons{
+    display:flex;
+    gap:18px;
+}
+
+.nav-btn{
+    padding:12px 24px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    text-decoration:none;
+}
+
+.nav-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+}
+
+.theme-toggle{
+    padding:12px 24px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+body.light-mode .theme-toggle{
+    background:#fff;
+    color:#333;
+    border:1px solid #ccc;
+}
+
+.theme-toggle:hover{
+    transform:translateY(-3px);
+    box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+}
+
+/* PROFILE POPUP */
+.profile-popup{
+    position:fixed;
+    top:90px;
+    right:30px;
+    background:#06101f;
+    border:1px solid rgba(0,255,255,0.25);
+    border-radius:16px;
+    padding:24px 30px;
+    z-index:999;
+    box-shadow:0 0 30px rgba(0,255,255,0.15);
+    min-width:280px;
+    display:none;
+}
+
+.profile-popup .popup-label{
+    color:#00eaff;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:2px;
+    margin-bottom:10px;
+}
+
+.profile-popup .popup-email{
+    color:white;
+    font-size:16px;
+    font-weight:600;
+}
+
+.profile-popup .popup-footer{
+    margin-top:16px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    color:#4a6080;
+    font-size:13px;
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    padding-top:50px;
+}
+
+body.light-mode .hero{
+    padding-top:50px;
+}
+
+.hero-badge{
+    display:inline-block;
+    background:rgba(0,229,255,0.1);
+    border:1px solid rgba(0,229,255,0.3);
+    color:#00eaff;
+    font-size:13px;
+    padding:5px 16px;
+    border-radius:50px;
+    margin-bottom:16px;
+    font-weight:600;
+}
+
+body.light-mode .hero-badge{
+    background:rgba(0,102,204,0.08);
+    border-color:rgba(0,102,204,0.3);
+    color:#0066cc;
+}
+
+.hero h1{
+    font-size:68px;
+    color:#00eaff;
+    text-shadow:0px 0px 25px rgba(0,255,255,0.45);
+}
+
+body.light-mode .hero h1{
+    color:#0066cc;
+    text-shadow:none;
+}
+
+.hero p{
+    margin-top:12px;
+    font-size:24px;
+    color:#d8e3f0;
+}
+
+body.light-mode .hero p{
+    color:#666;
+}
+
+/* STATS ROW — streak + quiz history */
+.stats-row{
+    width:92%;
+    margin:40px auto 0 auto;
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:28px;
+}
+
+/* STREAK BOX */
+.streak-box{
+    background:rgba(5,15,30,0.88);
+    border:1px solid rgba(0,255,255,0.15);
+    border-top:3px solid #ff9800;
+    border-radius:24px;
+    padding:36px 30px;
+    text-align:center;
+    backdrop-filter:blur(8px);
+    transition:0.35s;
+}
+
+body.light-mode .streak-box{
+    background:#fff;
+    border:1px solid #ddd;
+    border-top:3px solid #ff9800;
+}
+
+.streak-box:hover{
+    transform:translateY(-8px);
+    box-shadow:0px 0px 25px rgba(255,152,0,0.22);
+    border-color:rgba(255,152,0,0.4);
+    border-top-color:#ff9800;
+}
+
+.streak-box h3{
+    color:#ff9800;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:16px;
+}
+
+.streak-value{
+    font-size:64px;
+    font-weight:800;
+    color:#ff9800;
+    text-shadow:0 0 20px rgba(255,152,0,0.3);
+    line-height:1;
+}
+
+body.light-mode .streak-value{
+    color:#ff9800;
+    text-shadow:none;
+}
+
+.streak-label{
+    color:#4a6080;
+    font-size:14px;
+    margin-top:8px;
+    font-weight:600;
+    letter-spacing:1px;
+}
+
+body.light-mode .streak-label{
+    color:#666;
+}
+
+.streak-msg{
+    margin-top:14px;
+    color:#d8e3f0;
+    font-size:14px;
+    background:rgba(255,152,0,0.08);
+    border-radius:8px;
+    padding:8px 12px;
+}
+
+body.light-mode .streak-msg{
+    color:#333;
+    background:rgba(255,152,0,0.06);
+}
+
+/* QUIZ HISTORY BOX */
+.quiz-history-box{
+    background:rgba(5,15,30,0.88);
+    border:1px solid rgba(0,255,255,0.15);
+    border-top:3px solid #00eaff;
+    border-radius:24px;
+    padding:36px 30px;
+    backdrop-filter:blur(8px);
+    transition:0.35s;
+}
+
+body.light-mode .quiz-history-box{
+    background:#fff;
+    border:1px solid #ddd;
+    border-top:3px solid #0066cc;
+}
+
+.quiz-history-box:hover{
+    transform:translateY(-8px);
+    box-shadow:0px 0px 25px rgba(0,255,255,0.22);
+    border-color:rgba(0,255,255,0.3);
+    border-top-color:#00eaff;
+}
+
+.quiz-history-box h3{
+    color:#00eaff;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:20px;
+}
+
+body.light-mode .quiz-history-box h3{
+    color:#0066cc;
+}
+
+.quiz-history-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    max-height:220px;
+    overflow-y:auto;
+}
+
+.quiz-history-list::-webkit-scrollbar{
+    width:4px;
+}
+
+.quiz-history-list::-webkit-scrollbar-thumb{
+    background:rgba(0,255,255,0.2);
+    border-radius:4px;
+}
+
+.quiz-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:12px 16px;
+    background:rgba(0,255,255,0.05);
+    border:1px solid rgba(0,255,255,0.1);
+    border-radius:12px;
+    transition:0.3s;
+}
+
+body.light-mode .quiz-item{
+    background:#f5f5f5;
+    border:1px solid #ddd;
+}
+
+.quiz-item:hover{
+    background:rgba(0,255,255,0.12);
+    border-color:rgba(0,255,255,0.25);
+}
+
+body.light-mode .quiz-item:hover{
+    background:#e8f4ff;
+}
+
+.quiz-item-left{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    flex:1;
+}
+
+.quiz-topic{
+    color:white;
+    font-size:15px;
+    font-weight:600;
+}
+
+body.light-mode .quiz-topic{
+    color:#333;
+}
+
+.quiz-meta{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.quiz-date{
+    color:#4a6080;
+    font-size:12px;
+}
+
+body.light-mode .quiz-date{
+    color:#999;
+}
+
+.source-badge{
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:50px;
+    font-weight:700;
+    letter-spacing:0.5px;
+}
+
+.source-ai{
+    background:rgba(138,43,226,0.15);
+    color:#b07fff;
+    border:1px solid rgba(138,43,226,0.25);
+}
+
+.source-notes{
+    background:rgba(0,200,83,0.12);
+    color:#00e676;
+    border:1px solid rgba(0,200,83,0.2);
+}
+
+.source-lecture{
+    background:rgba(255,152,0,0.12);
+    color:#ffb300;
+    border:1px solid rgba(255,152,0,0.2);
+}
+
+body.light-mode .source-ai{ background:#f0e8ff; color:#6600cc; border-color:#d0b0ff; }
+body.light-mode .source-notes{ background:#e8fff0; color:#00a040; border-color:#90e0b0; }
+body.light-mode .source-lecture{ background:#fff5e0; color:#cc7700; border-color:#ffd080; }
+
+.quiz-item-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+    min-width:70px;
+}
+
+.quiz-score{
+    font-size:20px;
+    font-weight:800;
+    color:#00eaff;
+}
+
+.quiz-score.high{ color:#00ff88; }
+.quiz-score.mid{ color:#ffd700; }
+.quiz-score.low{ color:#ff6b6b; }
+
+.score-bar{
+    width:60px;
+    height:4px;
+    background:rgba(255,255,255,0.1);
+    border-radius:2px;
+    overflow:hidden;
+}
+
+body.light-mode .score-bar{
+    background:#ddd;
+}
+
+.score-fill{
+    height:100%;
+    border-radius:2px;
+}
+
+.no-history{
+    color:#4a6080;
+    font-size:15px;
+    text-align:center;
+    padding:20px 0;
+}
+
+body.light-mode .no-history{
+    color:#999;
+}
+
+/* CARDS — EXACT SAME SIZE */
+.cards{
+    width:92%;
+    margin:40px auto 50px auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:32px;
+}
+
+.card{
+    background:rgba(5,15,30,0.88);
+    border-radius:28px;
+    padding:60px 30px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.08);
+    transition:0.35s;
+    text-decoration:none;
+    color:white;
+    backdrop-filter:blur(8px);
+    min-height:320px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+.card-upload{ border-top:3px solid #00eaff; }
+.card-notes{ border-top:3px solid #b07fff; }
+.card-tutor{ border-top:3px solid #ffb300; }
+.card-lecture{ border-top:3px solid #00e676; }
+
+body.light-mode .card{
+    background:#fff;
+    border:1px solid #ddd;
+    color:#333;
+}
+
+body.light-mode .card-upload{ border-top:3px solid #0066cc; }
+body.light-mode .card-notes{ border-top:3px solid #6600cc; }
+body.light-mode .card-tutor{ border-top:3px solid #cc7700; }
+body.light-mode .card-lecture{ border-top:3px solid #00a040; }
+
+.card:hover{
+    transform:translateY(-12px);
+    box-shadow:0px 0px 35px rgba(0,255,255,0.28);
+    border:1px solid rgba(0,255,255,0.4);
+}
+
+.card-upload:hover{ box-shadow:0px 0px 35px rgba(0,229,255,0.3); }
+.card-notes:hover{ box-shadow:0px 0px 35px rgba(176,127,255,0.3); }
+.card-tutor:hover{ box-shadow:0px 0px 35px rgba(255,179,0,0.3); }
+.card-lecture:hover{ box-shadow:0px 0px 35px rgba(0,230,118,0.3); }
+
+body.light-mode .card:hover{
+    box-shadow:0px 0px 35px rgba(0,0,0,0.15);
+    border:1px solid #999;
+}
+
+.card-arrow{
+    position:absolute;
+    bottom:20px;
+    right:24px;
+    font-size:20px;
+    color:rgba(255,255,255,0.2);
+    transition:0.3s;
+}
+
+.card:hover .card-arrow{
+    color:rgba(255,255,255,0.6);
+    transform:translateX(4px);
+}
+
+.card-icon{
+    font-size:72px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    color:#00eaff;
+    font-size:38px;
+    line-height:1.3;
+    margin-bottom:16px;
+    font-weight:700;
+}
+
+.card-upload h2{ color:#00eaff; }
+.card-notes h2{ color:#b07fff; }
+.card-tutor h2{ color:#ffb300; }
+.card-lecture h2{ color:#00e676; }
+
+body.light-mode .card h2{ color:#0066cc; }
+body.light-mode .card-upload h2{ color:#0066cc; }
+body.light-mode .card-notes h2{ color:#6600cc; }
+body.light-mode .card-tutor h2{ color:#cc7700; }
+body.light-mode .card-lecture h2{ color:#00a040; }
+
+.card p{
+    color:#d6dfeb;
+    font-size:20px;
+    font-weight:500;
+}
+
+body.light-mode .card p{
+    color:#666;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+
+    nav{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .logo h1{ font-size:28px; }
+    .hero h1{ font-size:48px; }
+    .hero p{ font-size:18px; }
+
+    .stats-row{
+        grid-template-columns:1fr;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+        gap:24px;
+    }
+
+    .card{
+        min-height:280px;
+        padding:40px 20px;
+    }
+
+    .card h2{ font-size:32px; }
+    .card p{ font-size:18px; }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <div class="logo">
+        <div class="logo-icon">💡</div>
+        <h1>Brain Byte</h1>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="toggleProfile()">👤 Profile</button>
+        <button class="theme-toggle nav-btn" onclick="toggleTheme()">🌙</button>
+        <button class="nav-btn" onclick="logoutUser()">🚪 Logout</button>
+    </div>
+
+</nav>
+
+<!-- PROFILE POPUP -->
+<div class="profile-popup" id="profilePopup">
+    <div class="popup-label">LOGGED IN AS</div>
+    <div class="popup-email" id="popupEmail">Loading...</div>
+    <div class="popup-footer">Click Profile again to close</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">✨ Powered by Groq AI</div>
+    <h1>Brain Byte Dashboard</h1>
+    <p>AI Powered Smart Learning Assistant</p>
+</section>
+
+<!-- STATS ROW -->
+<div class="stats-row">
+
+    <!-- STUDY STREAK -->
+    <div class="streak-box">
+        <h3>🔥 Study Streak</h3>
+        <div class="streak-value" id="streakValue">0</div>
+        <div class="streak-label">DAYS IN A ROW</div>
+        <div class="streak-msg" id="streakMsg">Start studying to build your streak!</div>
+    </div>
+
+    <!-- QUIZ HISTORY -->
+    <div class="quiz-history-box">
+        <h3>📊 Recent Quiz History</h3>
+        <div class="quiz-history-list" id="quizHistoryList">
+            <div class="no-history">Loading...</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- CARDS -->
+<section class="cards">
+
+    <a href="/upload_notes" class="card card-upload">
+        <div class="card-icon">📄</div>
+        <h2>Upload Notes</h2>
+        <p>Upload study materials</p>
+        <span class="card-arrow">→</span>
+    </a>
+
+    <a href="/my_notes" class="card card-notes">
+        <div class="card-icon">📚</div>
+        <h2>My Notes</h2>
+        <p>View Uploaded Notes</p>
+        <span class="card-arrow">→</span>
+    </a>
+
+    <a href="/live_flashcards" class="card card-tutor">
+        <div class="card-icon">🎓</div>
+        <h2>AI Tutor</h2>
+        <p>Flashcards, Summary & Quiz</p>
+        <span class="card-arrow">→</span>
+    </a>
+
+    <a href="/lecture_audio" class="card card-lecture">
+        <div class="card-icon">🎤</div>
+        <h2>Lecture Audio</h2>
+        <p>Transcribe & Learn from lectures</p>
+        <span class="card-arrow">→</span>
+    </a>
+
+</section>
+
+<script type="module">
+
+import { auth, db } from "/static/firebase.js";
+
+import {
+    signOut,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let currentUserEmail = "";
+let profileOpen = false;
+
+/* CHECK USER */
+onAuthStateChanged(auth, async (user) => {
+
+    if(user){
+        currentUserEmail = user.email;
+        document.getElementById("popupEmail").textContent = "👤 " + currentUserEmail;
+        updateStreak();
+        await loadQuizHistory(user.uid);
+    } else {
+        window.location.href = "/login";
+    }
+
+});
+
+/* ── STUDY STREAK (localStorage) ── */
+function updateStreak(){
+    const today = new Date().toISOString().split("T")[0];
+    const lastStudy = localStorage.getItem("bb_last_study");
+    let streak = parseInt(localStorage.getItem("bb_streak") || "0");
+
+    if(lastStudy === today){
+        // already counted today
+    } else {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yStr = yesterday.toISOString().split("T")[0];
+
+        if(lastStudy === yStr){
+            streak += 1;
+        } else {
+            streak = 1;
+        }
+
+        localStorage.setItem("bb_streak", streak);
+        localStorage.setItem("bb_last_study", today);
+    }
+
+    document.getElementById("streakValue").textContent = streak;
+
+    if(streak >= 7){
+        document.getElementById("streakMsg").textContent = "🏆 Amazing! " + streak + " day streak!";
+    } else if(streak >= 3){
+        document.getElementById("streakMsg").textContent = "🔥 Keep it up! " + streak + " days strong!";
+    } else if(streak === 1){
+        document.getElementById("streakMsg").textContent = "✅ Great start! Come back tomorrow!";
+    } else {
+        document.getElementById("streakMsg").textContent = "Start studying to build your streak!";
+    }
+}
+
+/* ── QUIZ HISTORY (Firestore) ── */
+async function loadQuizHistory(userId){
+    const list = document.getElementById("quizHistoryList");
+    try{
+        const q = query(
+            collection(db, "quiz_history"),
+            where("userId", "==", userId),
+            orderBy("timestamp", "desc"),
+            limit(10)
+        );
+        const snapshot = await getDocs(q);
+
+        if(snapshot.empty){
+            list.innerHTML = `<div class="no-history">No quizzes taken yet. Start studying!</div>`;
+            return;
+        }
+
+        list.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+            const d = docSnap.data();
+            const date = d.timestamp
+                ? new Date(d.timestamp.seconds * 1000).toLocaleDateString()
+                : "Recently";
+            const accuracy = d.accuracy || 0;
+            let scoreClass = accuracy >= 80 ? "high" : accuracy >= 50 ? "mid" : "low";
+            let scoreColor = accuracy >= 80 ? "#00ff88" : accuracy >= 50 ? "#ffd700" : "#ff6b6b";
+
+            // SOURCE BADGE
+            const source = d.source || "";
+            let badgeHTML = "";
+            if(source === "ai_tutor"){
+                badgeHTML = `<span class="source-badge source-ai">AI Tutor</span>`;
+            } else if(source === "notes_quiz"){
+                badgeHTML = `<span class="source-badge source-notes">Notes</span>`;
+            } else if(d.topic === "Lecture Audio"){
+                badgeHTML = `<span class="source-badge source-lecture">Lecture</span>`;
+            }
+
+            // Get difficulty badge
+            let difficultyHTML = "";
+            const difficulty = (d.difficulty || "").toLowerCase();
+            if(difficulty === "easy"){
+                difficultyHTML = `<span class="source-badge source-notes" style="background:rgba(0,200,83,0.12);color:#00e676;border:1px solid rgba(0,200,83,0.2);">🟢 Easy</span>`;
+            } else if(difficulty === "moderate"){
+                difficultyHTML = `<span class="source-badge source-lecture" style="background:rgba(255,152,0,0.12);color:#ffb300;border:1px solid rgba(255,152,0,0.2);">🟡 Moderate</span>`;
+            } else if(difficulty === "difficult"){
+                difficultyHTML = `<span class="source-badge source-ai" style="background:rgba(255,23,68,0.12);color:#ff5252;border:1px solid rgba(255,23,68,0.2);">🔴 Difficult</span>`;
+            }
+
+            const item = document.createElement("div");
+            item.className = "quiz-item";
+            item.innerHTML = `
+                <div class="quiz-item-left">
+                    <div class="quiz-topic">${d.topic || "Quiz"}</div>
+                    <div class="quiz-meta">
+                        <span class="quiz-date">${date} · ${d.correct || 0}/${d.total || 0} correct</span>
+                        ${difficultyHTML}
+                        ${badgeHTML}
+                    </div>
+                </div>
+                <div class="quiz-item-right">
+                    <div class="quiz-score ${scoreClass}">${accuracy}%</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width:${accuracy}%;background:${scoreColor};"></div>
+                    </div>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+
+    } catch(err){
+        console.error("Quiz history error:", err);
+        list.innerHTML = `<div class="no-history">Could not load history. Try refreshing.</div>`;
+    }
+}
+
+/* PROFILE TOGGLE */
+window.toggleProfile = function(){
+    const popup = document.getElementById("profilePopup");
+    profileOpen = !profileOpen;
+    popup.style.display = profileOpen ? "block" : "none";
+}
+
+/* CLOSE POPUP ON OUTSIDE CLICK */
+document.addEventListener("click", function(e){
+    const popup = document.getElementById("profilePopup");
+    const profileBtn = e.target.closest("button");
+    if(
+        profileOpen &&
+        !popup.contains(e.target) &&
+        !(profileBtn && profileBtn.textContent.includes("Profile"))
+    ){
+        popup.style.display = "none";
+        profileOpen = false;
+    }
+});
+
+/* LOGOUT */
+window.logoutUser = async function(){
+    try{
+        await signOut(auth);
+        window.location.href = "/login";
+    } catch(error){
+        alert(error.message);
+    }
+}
+
+/* TOGGLE THEME */
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+}
+
+// Load theme on page load
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light"){
+        document.body.classList.add("light-mode");
+    }
+});
+
+</script>
+
+</body>
+</html>

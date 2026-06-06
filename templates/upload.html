@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Notes</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:
+    linear-gradient(rgba(2,9,22,0.9),
+    rgba(2,9,22,0.9)),
+    url('/static/images/brain3.jpeg');
+
+    background-size:cover;
+    background-position:center;
+    min-height:100vh;
+    color:white;
+    transition:0.3s;
+}
+
+body.light-mode{
+    background:#f0f4f8;
+    color:#333;
+}
+
+/* NAVBAR */
+nav{
+    width:100%;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+body.light-mode nav{
+    background:rgba(255,255,255,0.9);
+    border-bottom:1px solid #ddd;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-icon{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    font-size:24px;
+    box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+}
+
+.logo h1{
+    color:#00eaff;
+    font-size:34px;
+}
+
+body.light-mode .logo h1{
+    color:#0066cc;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    padding:12px 28px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+    text-decoration:none;
+    display:inline-block;
+    box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+}
+
+body.light-mode .back-btn{
+    background:linear-gradient(135deg,#0066cc,#003d99);
+}
+
+.back-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0px 0px 28px rgba(0,255,255,0.45);
+}
+
+/* THEME TOGGLE BUTTON */
+.theme-btn{
+    padding:10px 14px;
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:10px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+body.light-mode .theme-btn{
+    border-color:#ccc;
+    background:#fff;
+    color:#333;
+}
+
+.theme-btn:hover{
+    border-color:rgba(0,255,255,0.4);
+    background:rgba(0,255,255,0.1);
+}
+
+/* MAIN */
+.container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:60px 20px;
+    min-height:calc(100vh - 100px);
+}
+
+.upload-box{
+    width:500px;
+    background:rgba(5,15,30,0.88);
+    border-radius:28px;
+    padding:40px;
+    text-align:center;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+    transition:0.35s;
+}
+
+body.light-mode .upload-box{
+    background:#fff;
+    border:1px solid #ddd;
+    box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+}
+
+.upload-box:hover{
+    transform:translateY(-6px);
+    box-shadow:0px 0px 40px rgba(0,255,255,0.25);
+    border:1px solid rgba(0,255,255,0.2);
+}
+
+.upload-box h2{
+    font-size:42px;
+    color:#00eaff;
+    margin-bottom:15px;
+    font-weight:700;
+}
+
+body.light-mode .upload-box h2{
+    color:#0066cc;
+}
+
+.upload-box p{
+    color:#cfd9e6;
+    margin-bottom:35px;
+    font-size:17px;
+}
+
+body.light-mode .upload-box p{
+    color:#666;
+}
+
+/* DRAG & DROP ZONE */
+.drag-drop-zone{
+    border:2px dashed rgba(0,255,255,0.3);
+    border-radius:20px;
+    padding:40px 20px;
+    margin-bottom:25px;
+    background:rgba(0,255,255,0.05);
+    cursor:pointer;
+    transition:0.3s;
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+}
+
+body.light-mode .drag-drop-zone{
+    background:#f5f5f5;
+    border-color:#0066cc;
+}
+
+.drag-drop-zone.dragover{
+    border-color:#00e5ff;
+    background:rgba(0,255,255,0.15);
+    transform:scale(1.02);
+}
+
+.drag-drop-zone:hover{
+    border-color:#00e5ff;
+    background:rgba(0,255,255,0.1);
+}
+
+.drag-drop-icon{
+    font-size:48px;
+    animation:bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.drag-drop-text{
+    color:#7fdfff;
+    font-size:16px;
+    font-weight:600;
+}
+
+body.light-mode .drag-drop-text{
+    color:#0066cc;
+}
+
+.drag-drop-small{
+    color:#a0b0c0;
+    font-size:14px;
+}
+
+body.light-mode .drag-drop-small{
+    color:#999;
+}
+
+/* FILE INPUT HIDDEN */
+input[type="file"]{
+    display:none;
+}
+
+/* FILE PREVIEW */
+.file-preview{
+    background:rgba(0,255,255,0.08);
+    border:1px solid rgba(0,255,255,0.2);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:25px;
+    display:none;
+    animation:slideIn 0.3s ease;
+}
+
+body.light-mode .file-preview{
+    background:#f9f9f9;
+    border-color:#ddd;
+}
+
+.file-preview.show{
+    display:block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity:0;
+        transform:translateY(-10px);
+    }
+    to {
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.file-info{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.file-icon{
+    font-size:32px;
+}
+
+.file-details{
+    text-align:left;
+    flex:1;
+}
+
+.file-name{
+    color:#00eaff;
+    font-weight:600;
+    font-size:16px;
+    word-break:break-all;
+}
+
+body.light-mode .file-name{
+    color:#0066cc;
+}
+
+.file-size{
+    color:#a0b0c0;
+    font-size:14px;
+    margin-top:4px;
+}
+
+body.light-mode .file-size{
+    color:#999;
+}
+
+.remove-file{
+    background:rgba(255,107,107,0.2);
+    border:1px solid rgba(255,107,107,0.3);
+    color:#ff9999;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    transition:0.3s;
+}
+
+.remove-file:hover{
+    background:rgba(255,107,107,0.35);
+    border-color:rgba(255,107,107,0.5);
+}
+
+/* UPLOAD BUTTON */
+.upload-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#00e5ff,#0066ff);
+    color:white;
+    font-size:18px;
+    font-weight:600;
+    font-family:'Poppins',sans-serif;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0px 0px 20px rgba(0,255,255,0.25);
+}
+
+body.light-mode .upload-btn{
+    background:linear-gradient(135deg,#0066cc,#003d99);
+}
+
+.upload-btn:hover:not(:disabled){
+    transform:translateY(-3px);
+    box-shadow:0px 0px 28px rgba(0,255,255,0.45);
+}
+
+.upload-btn:active:not(:disabled){
+    transform:translateY(-1px);
+}
+
+.upload-btn:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+}
+
+/* PROGRESS BAR */
+.progress-container{
+    margin-top:25px;
+    display:none;
+}
+
+.progress-container.show{
+    display:block;
+}
+
+.progress-label{
+    color:#7fdfff;
+    font-size:14px;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.progress-bar{
+    width:100%;
+    height:8px;
+    background:rgba(0,255,255,0.1);
+    border-radius:4px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#00e5ff,#0066ff);
+    width:0%;
+    transition:width 0.3s ease;
+    box-shadow:0px 0px 10px rgba(0,255,255,0.4);
+}
+
+/* SUCCESS MESSAGE */
+.success-message{
+    margin-top:25px;
+    padding:20px;
+    background:rgba(0,255,136,0.15);
+    border:1px solid rgba(0,255,136,0.3);
+    border-radius:14px;
+    display:none;
+    animation:slideIn 0.3s ease;
+}
+
+.success-message.show{
+    display:block;
+}
+
+.success-title{
+    color:#00ff88;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.success-filename{
+    color:#a0d0b0;
+    font-size:15px;
+}
+
+/* ERROR MESSAGE */
+.error-message{
+    margin-top:25px;
+    padding:20px;
+    background:rgba(255,107,107,0.15);
+    border:1px solid rgba(255,107,107,0.3);
+    border-radius:14px;
+    display:none;
+    animation:slideIn 0.3s ease;
+}
+
+.error-message.show{
+    display:block;
+}
+
+.error-title{
+    color:#ff9999;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.error-text{
+    color:#ffb3b3;
+    font-size:15px;
+}
+
+/* LOADING SPINNER */
+.spinner{
+    display:inline-block;
+    width:16px;
+    height:16px;
+    border:2px solid rgba(0,255,255,0.3);
+    border-top:2px solid #00e5ff;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin-right:8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media(max-width:768px){
+    nav{
+        flex-direction:column;
+        gap:16px;
+        padding:20px;
+    }
+
+    .logo h1{ font-size:28px; }
+    
+    .container{
+        padding:40px 20px;
+    }
+
+    .upload-box{
+        width:90%;
+        padding:40px 25px;
+    }
+
+    .upload-box h2{ font-size:32px; }
+    
+    .drag-drop-zone{
+        padding:30px 15px;
+        min-height:100px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+
+    <div class="logo">
+        <div class="logo-icon">📄</div>
+        <h1>Upload Notes</h1>
+    </div>
+
+    <div style="display:flex; gap:16px; align-items:center;">
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+            <span id="themeIcon">🌙</span>
+        </button>
+        <a href="/dashboard" class="back-btn">
+            🏠 Dashboard
+        </a>
+    </div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div class="upload-box">
+
+        <h2>Upload Study Notes</h2>
+
+        <p>Upload PDF, PPT, DOCX or Images</p>
+
+        <!-- DRAG & DROP ZONE -->
+        <div class="drag-drop-zone" id="dragDropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="drag-drop-icon">📤</div>
+            <div class="drag-drop-text">Drag & drop your file here</div>
+            <div class="drag-drop-small">or click to select</div>
+        </div>
+
+        <!-- FILE INPUT (HIDDEN) -->
+        <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.docx,.doc,.jpg,.jpeg,.png,.gif,.webp" name="file">
+
+        <!-- FILE PREVIEW -->
+        <div class="file-preview" id="filePreview">
+            <div class="file-info">
+                <div class="file-icon" id="fileIcon">📄</div>
+                <div class="file-details">
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
+                </div>
+                <button type="button" class="remove-file" onclick="removeFile()">✕</button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+
+            <!-- UPLOAD BUTTON -->
+            <button type="submit" class="upload-btn" id="uploadBtn" disabled>
+                📤 Upload File
+            </button>
+
+            <!-- PROGRESS BAR -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-label">
+                    <span class="spinner"></span>
+                    Uploading...
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS MESSAGE -->
+        <div class="success-message" id="successMessage">
+            <div class="success-title">✅ Upload Successful!</div>
+            <div class="success-filename" id="successFilename"></div>
+        </div>
+
+        <!-- ERROR MESSAGE -->
+        <div class="error-message" id="errorMessage">
+            <div class="error-title">❌ Upload Failed</div>
+            <div class="error-text" id="errorText"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPTS -->
+<script type="module">
+
+import {
+    auth,
+    db
+} from "/static/firebase.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let selectedFile = null;
+
+const dragDropZone = document.getElementById("dragDropZone");
+const fileInput = document.getElementById("fileInput");
+const filePreview = document.getElementById("filePreview");
+const uploadForm = document.getElementById("uploadForm");
+const uploadBtn = document.getElementById("uploadBtn");
+const progressContainer = document.getElementById("progressContainer");
+const progressFill = document.getElementById("progressFill");
+const successMessage = document.getElementById("successMessage");
+const errorMessage = document.getElementById("errorMessage");
+
+// DRAG & DROP EVENTS
+dragDropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dragDropZone.classList.add("dragover");
+});
+
+dragDropZone.addEventListener("dragleave", () => {
+    dragDropZone.classList.remove("dragover");
+});
+
+dragDropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dragDropZone.classList.remove("dragover");
+    
+    const files = e.dataTransfer.files;
+    if(files.length > 0){
+        handleFileSelect(files[0]);
+    }
+});
+
+// FILE INPUT CHANGE
+fileInput.addEventListener("change", (e) => {
+    if(e.target.files.length > 0){
+        handleFileSelect(e.target.files[0]);
+    }
+});
+
+// HANDLE FILE SELECTION
+function handleFileSelect(file){
+    // Validate file
+    const allowedTypes = ["application/pdf", "application/vnd.ms-powerpoint", 
+                          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "application/msword", "image/jpeg", "image/png", "image/gif", "image/webp"];
+    
+    if(!allowedTypes.includes(file.type)){
+        showError("Invalid file type. Please upload PDF, PPT, DOCX or Images.");
+        return;
+    }
+
+    selectedFile = file;
+    updateFilePreview(file);
+    
+    // Manually add file to form
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileInput.files = dataTransfer.files;
+    
+    uploadBtn.disabled = false;
+}
+
+// UPDATE FILE PREVIEW
+function updateFilePreview(file){
+    const fileName = file.name;
+    const fileSize = (file.size / 1024).toFixed(2) + " KB";
+    const fileIcon = getFileIcon(file.type);
+    
+    document.getElementById("fileName").textContent = fileName;
+    document.getElementById("fileSize").textContent = fileSize;
+    document.getElementById("fileIcon").textContent = fileIcon;
+    
+    filePreview.classList.add("show");
+}
+
+// GET FILE ICON
+function getFileIcon(type){
+    if(type.includes("pdf")) return "📕";
+    if(type.includes("powerpoint") || type.includes("presentation")) return "📊";
+    if(type.includes("word") || type.includes("document")) return "📄";
+    if(type.includes("image")) return "🖼️";
+    return "📄";
+}
+
+// REMOVE FILE
+window.removeFile = function(){
+    selectedFile = null;
+    fileInput.value = "";
+    filePreview.classList.remove("show");
+    uploadBtn.disabled = true;
+};
+
+// FORM SUBMIT
+uploadForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    if(!selectedFile){
+        showError("Please select a file first.");
+        return;
+    }
+
+    uploadBtn.disabled = true;
+    progressContainer.classList.add("show");
+    
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    
+    try {
+        // Simulate progress
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 30;
+            if(progress > 90) progress = 90;
+            progressFill.style.width = progress + "%";
+        }, 100);
+        
+        const response = await fetch("/upload_notes", {
+            method: "POST",
+            body: formData
+        });
+        
+        clearInterval(interval);
+        
+        if(response.ok){
+            progressFill.style.width = "100%";
+            
+            setTimeout(() => {
+                progressContainer.classList.remove("show");
+                showSuccess(selectedFile.name);
+                saveToFirestore(selectedFile.name);
+                
+                // Reset form
+                setTimeout(() => {
+                    removeFile();
+                    progressFill.style.width = "0%";
+                }, 2000);
+            }, 500);
+        } else {
+            clearInterval(interval);
+            showError("Upload failed. Please try again.");
+            uploadBtn.disabled = false;
+        }
+    } catch(err){
+        console.error("Upload error:", err);
+        showError("Upload error: " + err.message);
+        uploadBtn.disabled = false;
+        progressContainer.classList.remove("show");
+    }
+});
+
+// SAVE TO FIRESTORE
+function saveToFirestore(filename){
+    onAuthStateChanged(auth, async (user) => {
+        if(user){
+            try{
+                await addDoc(
+                    collection(db, "notes"),
+                    {
+                        userId: user.uid,
+                        filename: filename,
+                        uploadedAt: serverTimestamp()
+                    }
+                );
+                console.log("File saved to Firestore ✅");
+            } catch(err){
+                console.error("Firestore error:", err);
+            }
+        }
+    });
+}
+
+// SHOW SUCCESS
+function showSuccess(filename){
+    errorMessage.classList.remove("show");
+    document.getElementById("successFilename").textContent = "Uploaded: " + filename;
+    successMessage.classList.add("show");
+}
+
+// SHOW ERROR
+function showError(message){
+    successMessage.classList.remove("show");
+    document.getElementById("errorText").textContent = message;
+    errorMessage.classList.add("show");
+}
+
+// TOGGLE THEME
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    const isDark = !document.body.classList.contains("light-mode");
+    document.getElementById("themeIcon").textContent = isDark ? "🌙" : "☀️";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+}
+
+// Load theme on page load
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light"){
+        document.body.classList.add("light-mode");
+        document.getElementById("themeIcon").textContent = "☀️";
+    } else {
+        document.body.classList.remove("light-mode");
+        document.getElementById("themeIcon").textContent = "🌙";
+    }
+});
+
+</script>
+
+</body>
+</html>

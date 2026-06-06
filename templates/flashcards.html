@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Brain Byte Flashcards</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:
+            linear-gradient(rgba(2,9,22,0.9),
+            rgba(2,9,22,0.9)),
+            url('/static/images/brain3.jpeg');
+
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+            color:white;
+            min-height:100vh;
+            padding:40px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+        }
+
+        /* TOP BAR */
+        .top-bar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
+
+        .title{
+            font-size:42px;
+            font-weight:700;
+            color:#00eaff;
+            text-shadow:0px 0px 25px rgba(0,255,255,0.45);
+        }
+
+        .filename{
+            margin-top:8px;
+            color:#8fc8ff;
+            font-size:17px;
+        }
+
+        .back-btn{
+            padding:12px 24px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            text-decoration:none;
+        }
+
+        .back-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+        }
+
+        /* FLASHCARD COUNTER */
+        .flashcard-counter{
+            text-align:center;
+            color:#4a6080;
+            font-size:15px;
+            margin-bottom:30px;
+            font-weight:600;
+            letter-spacing:1px;
+        }
+
+        .flashcard-counter span{
+            color:#00eaff;
+            font-weight:700;
+        }
+
+        /* CARDS GRID */
+        .cards-grid{
+            display:grid;
+            grid-template-columns:
+            repeat(auto-fill,minmax(320px,1fr));
+            gap:28px;
+        }
+
+        /* FLASHCARD */
+        .flashcard{
+            perspective:1000px;
+            min-height:280px;
+            height:auto;
+            cursor:pointer;
+            transition:0.35s;
+        }
+
+        .flashcard:hover{
+            transform:translateY(-8px);
+        }
+
+        .flashcard-inner{
+            position:relative;
+            width:100%;
+            min-height:280px;
+            height:100%;
+            transition:transform 0.8s;
+            transform-style:preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner{
+            transform:rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back{
+            position:absolute;
+            width:100%;
+            min-height:280px;
+            height:100%;
+            backface-visibility:hidden;
+            border-radius:22px;
+            padding:30px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            line-height:1.6;
+        }
+
+        .flashcard-front{
+            background:rgba(5,15,30,0.88);
+            border:1px solid rgba(0,255,255,0.15);
+            backdrop-filter:blur(8px);
+            font-size:20px;
+            font-weight:600;
+            color:white;
+        }
+
+        .flashcard-front:hover{
+            box-shadow:0 0 25px rgba(0,255,255,0.22);
+            border:1px solid rgba(0,255,255,0.3);
+        }
+
+        .flashcard-back{
+            background:linear-gradient(135deg,#041e4f,#0a3a8a);
+            border:1px solid rgba(0,255,255,0.3);
+            transform:rotateY(180deg);
+            font-size:17px;
+            color:white;
+        }
+
+        .card-label{
+            font-size:13px;
+            font-weight:700;
+            color:#00e5ff;
+            letter-spacing:3px;
+            text-transform:uppercase;
+            margin-bottom:14px;
+        }
+
+        /* CARD NUMBER */
+        .card-number{
+            position:absolute;
+            top:14px;
+            left:18px;
+            font-size:11px;
+            font-weight:700;
+            color:#2a5070;
+            letter-spacing:1px;
+        }
+
+        /* PAGE BADGE */
+        .page-badge{
+            position:absolute;
+            bottom:14px;
+            right:18px;
+            padding:6px 14px;
+            border-radius:50px;
+            background:rgba(0,255,255,0.1);
+            border:1px solid rgba(0,255,255,0.2);
+            font-size:12px;
+            font-weight:600;
+            color:#00e5ff;
+            text-decoration:none;
+            transition:0.3s;
+        }
+
+        .page-badge:hover{
+            background:rgba(0,255,255,0.25);
+            box-shadow:0 0 12px rgba(0,255,255,0.3);
+            color:white;
+        }
+
+        .tap-hint{
+            font-size:12px;
+            color:#2a5070;
+            margin-top:14px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+
+            body{
+                padding:20px;
+            }
+
+            .title{
+                font-size:32px;
+            }
+
+            .cards-grid{
+                grid-template-columns:1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+
+        <div>
+
+            <div class="title">
+                🎴 Flashcards
+            </div>
+
+            <div class="filename">
+                {{ filename }}
+            </div>
+
+        </div>
+
+        <a href="/my_notes"
+        class="back-btn">
+            ← My Notes
+        </a>
+
+    </div>
+
+    <!-- FLASHCARD COUNTER -->
+    <div class="flashcard-counter">
+        Total: <span>{{ flashcards|length }} Flashcards</span>
+    </div>
+
+    <div class="cards-grid">
+
+        {% for card in flashcards %}
+
+        <div class="flashcard"
+        onclick="flipCard(this)">
+
+            <div class="flashcard-inner">
+
+                <!-- FRONT -->
+                <div class="flashcard-front">
+
+                    <span class="card-number">{{ loop.index }} / {{ flashcards|length }}</span>
+
+                    <div class="card-label">Q</div>
+
+                    <div>{{ card.question }}</div>
+
+                    <div class="tap-hint">
+                        Tap to reveal answer
+                    </div>
+
+                    <!-- PAGE BADGE FRONT -->
+                    <a class="page-badge"
+                    href="/uploads/{{ filename }}#page={{ card.page }}"
+                    target="_blank"
+                    onclick="event.stopPropagation()">
+                        📄 Page {{ card.page }}
+                    </a>
+
+                </div>
+
+                <!-- BACK -->
+                <div class="flashcard-back">
+
+                    <span class="card-number">{{ loop.index }} / {{ flashcards|length }}</span>
+
+                    <div class="card-label">A</div>
+
+                    <div>{{ card.answer }}</div>
+
+                    <div class="tap-hint">
+                        Tap to flip back
+                    </div>
+
+                    <!-- PAGE BADGE BACK -->
+                    <a class="page-badge"
+                    href="/uploads/{{ filename }}#page={{ card.page }}"
+                    target="_blank"
+                    onclick="event.stopPropagation()">
+                        📄 Page {{ card.page }}
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+function flipCard(card){
+    card.classList.toggle("flipped");
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Quiz</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background: linear-gradient(rgba(2,9,22,0.92), rgba(2,9,22,0.92)), url('/static/images/brain3.jpeg');
+            background-size:cover;
+            background-position:center;
+            min-height:100vh;
+            color:white;
+            transition:0.3s;
+        }
+
+        body.light-mode{
+            background:#f0f4f8;
+            color:#333;
+        }
+
+        nav{
+            width:100%;
+            padding:20px 60px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            background:rgba(0,0,0,0.35);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid rgba(255,255,255,0.08);
+        }
+
+        body.light-mode nav{
+            background:rgba(255,255,255,0.9);
+            border-bottom:1px solid #ddd;
+        }
+
+        .nav-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .logo-icon{
+            width:50px;
+            height:50px;
+            border-radius:50%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            font-size:24px;
+            box-shadow:0px 0px 20px rgba(0,255,255,0.35);
+        }
+
+        .logo h1{
+            color:#00eaff;
+            font-size:34px;
+        }
+
+        body.light-mode .logo h1{
+            color:#0066cc;
+        }
+
+        .theme-toggle{
+            padding:10px 16px;
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,0.2);
+            background:rgba(255,255,255,0.08);
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        body.light-mode .theme-toggle{
+            border-color:#ccc;
+            background:#fff;
+            color:#333;
+        }
+
+        .back-btn{
+            padding:12px 28px;
+            border:none;
+            border-radius:14px;
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            color:white;
+            font-size:16px;
+            font-weight:700;
+            cursor:pointer;
+            transition:0.3s;
+            text-decoration:none;
+            display:inline-block;
+            box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+        }
+
+        .back-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0px 0px 28px rgba(0,255,255,0.45);
+        }
+
+        .container{
+            width:92%;
+            max-width:900px;
+            margin:40px auto;
+        }
+
+        .quiz-container{
+            background:rgba(5,15,30,0.88);
+            border-radius:28px;
+            padding:40px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0px 0px 30px rgba(0,255,255,0.15);
+            backdrop-filter:blur(10px);
+        }
+
+        body.light-mode .quiz-container{
+            background:#fff;
+            border:1px solid #ddd;
+            box-shadow:0px 0px 30px rgba(0,0,0,0.08);
+        }
+
+        .progress-bar{
+            width:100%;
+            height:8px;
+            background:rgba(0,255,255,0.1);
+            border-radius:4px;
+            margin-bottom:30px;
+            overflow:hidden;
+        }
+
+        .progress-fill{
+            height:100%;
+            background:linear-gradient(90deg,#00e5ff,#0066ff);
+            width:0%;
+            transition:width 0.3s;
+        }
+
+        .question-counter{
+            color:#7fdfff;
+            font-size:14px;
+            margin-bottom:20px;
+        }
+
+        body.light-mode .question-counter{
+            color:#0066cc;
+        }
+
+        .question-text{
+            font-size:22px;
+            font-weight:600;
+            color:white;
+            margin-bottom:30px;
+            line-height:1.5;
+        }
+
+        body.light-mode .question-text{
+            color:#333;
+        }
+
+        .options{
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+            margin-bottom:20px;
+        }
+
+        .option{
+            padding:16px 20px;
+            border:2px solid rgba(0,255,255,0.2);
+            border-radius:12px;
+            background:rgba(0,0,0,0.2);
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:16px;
+            font-weight:500;
+        }
+
+        body.light-mode .option{
+            background:#f5f5f5;
+            color:#333;
+            border-color:#ddd;
+        }
+
+        .option:hover:not(.disabled){
+            border-color:#00e5ff;
+            background:rgba(0,255,255,0.1);
+        }
+
+        .option.correct{
+            border-color:#00ff88 !important;
+            background:rgba(0,255,136,0.25) !important;
+            color:#00ff88 !important;
+            font-weight:700;
+        }
+
+        .option.incorrect{
+            border-color:#ff6b6b !important;
+            background:rgba(255,107,107,0.25) !important;
+            color:#ff6b6b !important;
+            font-weight:700;
+        }
+
+        .option.disabled{
+            pointer-events:none;
+            opacity:0.7;
+        }
+
+        /* CORRECT ANSWER REVEAL */
+        .answer-reveal{
+            margin-top:16px;
+            padding:14px 20px;
+            border-radius:12px;
+            background:rgba(0,255,136,0.12);
+            border:1px solid rgba(0,255,136,0.35);
+            color:#00ff88;
+            font-size:15px;
+            font-weight:600;
+            display:none;
+        }
+
+        body.light-mode .answer-reveal{
+            background:#e8fff4;
+            border-color:#00c853;
+            color:#00a040;
+        }
+
+        /* FIB INPUT */
+        .fib-wrap{
+            margin-bottom:20px;
+        }
+
+        .input-answer{
+            width:100%;
+            padding:16px;
+            border:2px solid rgba(0,255,255,0.2);
+            border-radius:12px;
+            background:rgba(0,0,0,0.2);
+            color:white;
+            font-size:16px;
+            font-family:'Poppins',sans-serif;
+            margin-bottom:12px;
+            transition:0.3s;
+        }
+
+        body.light-mode .input-answer{
+            background:#f5f5f5;
+            color:#333;
+            border-color:#ddd;
+        }
+
+        .input-answer:focus{
+            outline:none;
+            border-color:#00e5ff;
+        }
+
+        .input-answer:disabled{
+            opacity:0.7;
+        }
+
+        .fib-result{
+            padding:12px 18px;
+            border-radius:10px;
+            font-size:15px;
+            font-weight:600;
+            display:none;
+            margin-bottom:12px;
+        }
+
+        .fib-result.correct{
+            background:rgba(0,255,136,0.15);
+            border:1px solid rgba(0,255,136,0.35);
+            color:#00ff88;
+        }
+
+        .fib-result.wrong{
+            background:rgba(255,107,107,0.15);
+            border:1px solid rgba(255,107,107,0.35);
+            color:#ff6b6b;
+        }
+
+        /* BUTTON GROUP */
+        .button-group{
+            display:flex;
+            gap:16px;
+            justify-content:space-between;
+            margin-top:20px;
+        }
+
+        .btn{
+            padding:14px 32px;
+            border:none;
+            border-radius:12px;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            color:white;
+            font-family:'Poppins',sans-serif;
+        }
+
+        .next-btn{
+            background:linear-gradient(135deg,#00e5ff,#0066ff);
+            box-shadow:0px 0px 18px rgba(0,255,255,0.25);
+            flex:1;
+        }
+
+        .next-btn:hover:not(:disabled){
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,255,255,0.4);
+        }
+
+        .next-btn:disabled{
+            opacity:0.5;
+            cursor:not-allowed;
+        }
+
+        .skip-btn{
+            background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.2);
+            color:#aaa;
+            padding:14px 24px;
+        }
+
+        .skip-btn:hover{
+            background:rgba(255,255,255,0.15);
+            color:white;
+        }
+
+        body.light-mode .skip-btn{
+            background:#eee;
+            border-color:#ccc;
+            color:#666;
+        }
+
+        body.light-mode .skip-btn:hover{
+            background:#ddd;
+            color:#333;
+        }
+
+        .check-btn{
+            background:linear-gradient(135deg,#00c853,#009624);
+            box-shadow:0px 0px 18px rgba(0,200,83,0.25);
+            padding:14px 28px;
+        }
+
+        .check-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,200,83,0.4);
+        }
+
+        /* RESULTS PAGE */
+        .results-container{
+            text-align:center;
+            display:none;
+        }
+
+        .results-container.show{
+            display:block;
+        }
+
+        .score-display{
+            font-size:72px;
+            font-weight:800;
+            color:#00eaff;
+            margin:30px 0;
+            text-shadow:0 0 20px rgba(0,255,255,0.3);
+        }
+
+        body.light-mode .score-display{
+            color:#0066cc;
+            text-shadow:none;
+        }
+
+        .results-message{
+            font-size:22px;
+            margin-bottom:30px;
+            color:#d8e3f0;
+        }
+
+        body.light-mode .results-message{
+            color:#666;
+        }
+
+        .restart-btn{
+            background:linear-gradient(135deg,#00c853,#009624);
+            box-shadow:0px 0px 18px rgba(0,200,83,0.25);
+            padding:16px 40px;
+            margin-top:20px;
+            margin-right:12px;
+        }
+
+        .restart-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(0,200,83,0.4);
+        }
+
+        .dashboard-btn{
+            background:linear-gradient(135deg,#8a2be2,#4b0082);
+            box-shadow:0px 0px 18px rgba(138,43,226,0.25);
+            padding:16px 40px;
+            margin-top:20px;
+        }
+
+        .dashboard-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0px 0px 25px rgba(138,43,226,0.4);
+        }
+
+        @media(max-width:768px){
+            nav{
+                flex-direction:column;
+                gap:16px;
+                padding:20px;
+            }
+
+            .logo h1{ font-size:28px; }
+            .quiz-container{ padding:20px; }
+            .question-text{ font-size:18px; }
+            .button-group{ flex-direction:column; }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-left">
+        <div class="logo">
+            <div class="logo-icon">🎯</div>
+            <h1>Quiz</h1>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <a href="/dashboard" class="back-btn">🏠 Dashboard</a>
+</nav>
+
+<div class="container">
+
+    <!-- QUIZ -->
+    <div class="quiz-container" id="quizContainer">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="question-counter">
+            Question <span id="currentQuestion">1</span> of <span id="totalQuestions">0</span>
+        </div>
+
+        <div class="question-text" id="questionText"></div>
+
+        <!-- MCQ / TF OPTIONS -->
+        <div class="options" id="optionsContainer"></div>
+
+        <!-- CORRECT ANSWER REVEAL (for MCQ/TF wrong answer) -->
+        <div class="answer-reveal" id="answerReveal"></div>
+
+        <!-- FIB INPUT -->
+        <div class="fib-wrap" id="fibWrap" style="display:none;">
+            <input type="text" id="answerInput" class="input-answer" placeholder="Type your answer here...">
+            <div class="fib-result" id="fibResult"></div>
+            <div class="button-group" style="margin-top:0;">
+                <button class="btn check-btn" id="checkBtn" onclick="checkFIB()">✅ Check Answer</button>
+                <button class="btn skip-btn" id="skipBtn" onclick="skipFIB()">👁️ Show Answer</button>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                Next Question →
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-container" id="resultsContainer">
+        <h2 style="color:#00eaff; font-size:36px; margin-bottom:20px;">Quiz Complete! 🎉</h2>
+
+        <div class="score-display" id="scoreDisplay">0%</div>
+
+        <div class="results-message" id="resultMessage"></div>
+
+        <div>
+            <button class="btn restart-btn" onclick="location.reload()">🔄 Try Again</button>
+            <button class="btn dashboard-btn" onclick="window.location.href='/dashboard'">🏠 Dashboard</button>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from "/static/firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+let currentUser = null;
+let questions = [];
+let currentIndex = 0;
+let userAnswers = [];
+let correctCount = 0;
+let answered = false;
+
+onAuthStateChanged(auth, (user) => {
+    if(!user){
+        window.location.href = "/login";
+    } else {
+        currentUser = user;
+        loadQuiz();
+    }
+});
+
+function loadQuiz(){
+    const quizData = sessionStorage.getItem("lectureQuiz");
+
+    if(!quizData){
+        alert("No quiz data found. Please go back and try again.");
+        window.location.href = "/lecture_audio";
+        return;
+    }
+
+    questions = JSON.parse(quizData);
+
+    if(questions.length === 0){
+        alert("No questions generated. Please try again.");
+        window.location.href = "/lecture_audio";
+        return;
+    }
+
+    userAnswers = new Array(questions.length).fill(null);
+    document.getElementById("totalQuestions").textContent = questions.length;
+
+    showQuestion(0);
+}
+
+function showQuestion(index){
+    const question = questions[index];
+    answered = false;
+
+    document.getElementById("currentQuestion").textContent = index + 1;
+    document.getElementById("questionText").textContent = question.question;
+
+    // Update progress
+    const progress = ((index + 1) / questions.length) * 100;
+    document.getElementById("progressFill").style.width = progress + "%";
+
+    // Reset
+    document.getElementById("optionsContainer").innerHTML = "";
+    document.getElementById("answerReveal").style.display = "none";
+    document.getElementById("answerReveal").textContent = "";
+    document.getElementById("fibWrap").style.display = "none";
+    document.getElementById("answerInput").value = "";
+    document.getElementById("answerInput").disabled = false;
+    document.getElementById("fibResult").style.display = "none";
+    document.getElementById("fibResult").className = "fib-result";
+    document.getElementById("checkBtn").style.display = "inline-block";
+    document.getElementById("skipBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").disabled = true;
+
+    if(question.type === "MCQ"){
+        question.options.forEach((option) => {
+            const btn = document.createElement("div");
+            btn.className = "option";
+            btn.textContent = option;
+            btn.onclick = () => selectOption(btn, option, question.answer);
+            document.getElementById("optionsContainer").appendChild(btn);
+        });
+
+    } else if(question.type === "TF"){
+        ["True", "False"].forEach((option) => {
+            const btn = document.createElement("div");
+            btn.className = "option";
+            btn.textContent = option;
+            btn.onclick = () => selectOption(btn, option, question.answer);
+            document.getElementById("optionsContainer").appendChild(btn);
+        });
+
+    } else if(question.type === "FIB"){
+        document.getElementById("fibWrap").style.display = "block";
+        document.getElementById("answerInput").oninput = () => {
+            // enable next only after check
+        };
+    }
+}
+
+function selectOption(element, selected, correctAnswer){
+    if(answered) return;
+    answered = true;
+
+    // Disable all options
+    document.querySelectorAll(".option").forEach(opt => {
+        opt.classList.add("disabled");
+    });
+
+    const isCorrect = selected.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+
+    if(isCorrect){
+        element.classList.add("correct");
+        userAnswers[currentIndex] = "correct";
+        correctCount++;
+    } else {
+        element.classList.add("incorrect");
+        userAnswers[currentIndex] = "wrong";
+
+        // Show correct answer below
+        const reveal = document.getElementById("answerReveal");
+        reveal.textContent = "✅ Correct Answer: " + correctAnswer;
+        reveal.style.display = "block";
+
+        // Also highlight correct option in green
+        document.querySelectorAll(".option").forEach(opt => {
+            if(opt.textContent.trim().toLowerCase() === correctAnswer.trim().toLowerCase()){
+                opt.classList.add("correct");
+            }
+        });
+    }
+
+    document.getElementById("nextBtn").disabled = false;
+}
+
+// FIB CHECK
+window.checkFIB = function(){
+    const input = document.getElementById("answerInput");
+    const given = input.value.trim().toLowerCase();
+    const correct = questions[currentIndex].answer.trim().toLowerCase();
+    const fibResult = document.getElementById("fibResult");
+
+    if(!given){
+        alert("Please type an answer or click Show Answer.");
+        return;
+    }
+
+    input.disabled = true;
+    document.getElementById("checkBtn").style.display = "none";
+    document.getElementById("skipBtn").style.display = "none";
+    answered = true;
+
+    if(given === correct || correct.includes(given) || given.includes(correct)){
+        userAnswers[currentIndex] = "correct";
+        correctCount++;
+        fibResult.className = "fib-result correct";
+        fibResult.textContent = "✅ Correct!";
+    } else {
+        userAnswers[currentIndex] = "wrong";
+        fibResult.className = "fib-result wrong";
+        fibResult.textContent = "❌ Wrong! Correct Answer: " + questions[currentIndex].answer;
+    }
+
+    fibResult.style.display = "block";
+    document.getElementById("nextBtn").disabled = false;
+}
+
+// FIB SKIP / SHOW ANSWER
+window.skipFIB = function(){
+    const input = document.getElementById("answerInput");
+    input.disabled = true;
+    document.getElementById("checkBtn").style.display = "none";
+    document.getElementById("skipBtn").style.display = "none";
+    answered = true;
+    userAnswers[currentIndex] = "wrong";
+
+    const fibResult = document.getElementById("fibResult");
+    fibResult.className = "fib-result wrong";
+    fibResult.textContent = "👁️ Answer: " + questions[currentIndex].answer;
+    fibResult.style.display = "block";
+
+    document.getElementById("nextBtn").disabled = false;
+}
+
+window.nextQuestion = function(){
+    if(currentIndex < questions.length - 1){
+        currentIndex++;
+        showQuestion(currentIndex);
+    } else {
+        showResults();
+    }
+}
+
+function showResults(){
+    const accuracy = Math.round((correctCount / questions.length) * 100);
+
+    document.getElementById("quizContainer").style.display = "none";
+    document.getElementById("resultsContainer").classList.add("show");
+    document.getElementById("scoreDisplay").textContent = accuracy + "%";
+
+    let message = "";
+    if(accuracy >= 80){
+        message = "🏆 Excellent! You've mastered this topic!";
+    } else if(accuracy >= 60){
+        message = "🎯 Great job! Keep practicing!";
+    } else if(accuracy >= 40){
+        message = "📚 Good effort! Review the content and try again!";
+    } else {
+        message = "💪 Keep learning! You'll improve!";
+    }
+
+    document.getElementById("resultMessage").textContent =
+        correctCount + " out of " + questions.length + " correct • " + message;
+
+    saveQuizResult(accuracy);
+}
+
+async function saveQuizResult(accuracy){
+    try {
+        if(!currentUser) return;
+
+        await addDoc(collection(db, "quiz_history"), {
+            userId: currentUser.uid,
+            topic: "Lecture Audio",
+            correct: correctCount,
+            total: questions.length,
+            accuracy: accuracy,
+            timestamp: serverTimestamp()
+        });
+
+    } catch(err){
+        console.error("Error saving quiz result:", err);
+    }
+}
+
+window.toggleTheme = function(){
+    document.body.classList.toggle("light-mode");
+    localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+}
+
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme === "light"){
+        document.body.classList.add("light-mode");
+    }
+});
+
+</script>
+
+</body>
+</html>

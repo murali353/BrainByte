@@ -378,43 +378,7 @@ button:hover{
     font-size:17px;
 }
 
-.suggestions{
 
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:15px;
-
-    margin-bottom:25px;
-}
-
-.suggestion-btn{
-
-    background:#10263f;
-
-    color:#00e5ff;
-
-    border:
-    1px solid rgba(0,229,255,0.25);
-
-    padding:12px 18px;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-    transition:0.3s;
-
-    font-size:16px;
-}
-
-.suggestion-btn:hover{
-
-    background:#183554;
-
-    transform:translateY(-2px);
-}
 
 .loading{
 
@@ -586,17 +550,6 @@ button:hover{
         font-size:14px;
     }
 
-    .suggestions{
-        gap:10px;
-        margin-bottom:16px;
-    }
-
-    .suggestion-btn{
-        padding:10px 14px;
-        font-size:13px;
-        border-radius:10px;
-    }
-
     .input-area{
         gap:10px;
         flex-direction:column;
@@ -653,7 +606,7 @@ button:hover{
 
 <div class="title">
 
-🤖 AI Chat With PDF
+AI Chat With PDF
 
 </div>
 
@@ -678,60 +631,19 @@ class="back-btn">
 
 <h2>
 
-🚀 Ask Anything From Your PDF
+Ask Anything From Your PDF
 
 </h2>
 
 <p>
 
-Ask doubts, explanations, summaries,
-definitions, concepts, important
-questions, or exam topics directly
-from your uploaded PDF. Edit your
-messages or use the microphone to
-speak your questions!
+Ask doubts, explanations, summaries, definitions, concepts, important questions, or exam topics directly from your uploaded PDF. Edit your messages or use the microphone to speak your questions!
 
 </p>
 
 </div>
 
-<!-- SUGGESTIONS -->
 
-<div class="suggestions">
-
-<div
-class="suggestion-btn"
-onclick="quickAsk('Explain Artificial Intelligence')">
-
-💡 Explain AI
-
-</div>
-
-<div
-class="suggestion-btn"
-onclick="quickAsk('Advantages of Machine Learning')">
-
-💡 ML Advantages
-
-</div>
-
-<div
-class="suggestion-btn"
-onclick="quickAsk('Important exam questions')">
-
-💡 Exam Questions
-
-</div>
-
-<div
-class="suggestion-btn"
-onclick="quickAsk('Summarize this PDF')">
-
-💡 Summarize PDF
-
-</div>
-
-</div>
 
 <div class="chat-box"
 id="chatBox">
@@ -783,7 +695,7 @@ if(SpeechRecognition){
     recognition.onstart = function(){
         isListening = true;
         document.getElementById('micBtn').classList.add('listening');
-        document.getElementById('micBtn').textContent = '🎙️ Listening...';
+        document.getElementById('micBtn').textContent = '🎙️';
     };
 
     recognition.onresult = function(event){
@@ -849,8 +761,8 @@ async function sendMessage(){
     userMsgDiv.innerHTML = `
         <div class="message-content">${message}</div>
         <div class="message-actions">
-            <button class="edit-btn" onclick="editMessage(this, '${escapeHtml(message)}')">✏️ Edit</button>
-            <button class="delete-btn" onclick="deleteMessage(this)">🗑️ Delete</button>
+            <button class="edit-btn" onclick="editMessage(this, '${escapeHtml(message)}')">Edit</button>
+            <button class="delete-btn" onclick="deleteMessage(this)">Delete</button>
         </div>
     `;
     chatBox.appendChild(userMsgDiv);
@@ -864,7 +776,7 @@ async function sendMessage(){
     loadingDiv.id = "loading";
     loadingDiv.innerHTML = `
         <div class="loading">
-            <span>🤖 Thinking</span>
+            <span>Thinking</span>
             <div class="dot"></div>
             <div class="dot"></div>
             <div class="dot"></div>
@@ -899,7 +811,7 @@ async function sendMessage(){
         loadingDiv.remove();
         const errorDiv = document.createElement("div");
         errorDiv.className = "message ai";
-        errorDiv.innerHTML = "❌ Error while generating response.";
+        errorDiv.innerHTML = "Error while generating response.";
         chatBox.appendChild(errorDiv);
     }
 }
@@ -912,7 +824,6 @@ function editMessage(btn, originalText){
     const messageDiv = btn.closest('.message');
     const contentDiv = messageDiv.querySelector('.message-content');
     
-    // Prevent double edit
     if(messageDiv.classList.contains('edit-mode')){
         return;
     }
@@ -922,8 +833,8 @@ function editMessage(btn, originalText){
     const editHTML = `
         <div class="edit-input-area">
             <input type="text" class="edit-input" value="${originalText}">
-            <button onclick="saveEdit(this)">✅ Save</button>
-            <button onclick="cancelEdit(this)" style="background: linear-gradient(135deg, #ff6b6b, #ff8a8a);">❌ Cancel</button>
+            <button onclick="saveEdit(this)">Save</button>
+            <button onclick="cancelEdit(this)" style="background: linear-gradient(135deg, #ff6b6b, #ff8a8a);">Cancel</button>
         </div>
     `;
     
@@ -963,7 +874,7 @@ async function saveEdit(btn){
 
     loadingDiv.innerHTML = `
         <div class="loading">
-            <span>🤖 Thinking</span>
+            <span>Thinking</span>
             <div class="dot"></div>
             <div class="dot"></div>
             <div class="dot"></div>
@@ -1008,7 +919,7 @@ async function saveEdit(btn){
         errorDiv.className = "message ai";
 
         errorDiv.innerHTML =
-            "❌ Error while regenerating response.";
+            "Error while regenerating response.";
 
         chatBox.appendChild(errorDiv);
     }

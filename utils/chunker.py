@@ -1,8 +1,8 @@
-from nltk.tokenize import sent_tokenize
+import re
 
 def chunk_text(text, max_words=1200):
 
-    sentences = sent_tokenize(text)
+    sentences = re.split(r'(?<=[.!?])\s+', text)
 
     chunks = []
 

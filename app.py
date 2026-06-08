@@ -15,9 +15,6 @@ from groq import Groq
 # ENV
 from dotenv import load_dotenv
 
-# WHISPER (audio transcription)
-import whisper
-
 # UTILS
 from utils.text_cleaner import clean_pdf_text
 from utils.summarizer import build_summary_prompt
@@ -31,15 +28,10 @@ load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
 
 if not api_key:
-
-    raise ValueError(
-        "GROQ_API_KEY missing in .env file"
-    )
+    print("WARNING: GROQ_API_KEY is not set. AI features will not work.")
 
 # GROQ CLIENT
-client = Groq(
-    api_key=api_key
-)
+client = Groq(api_key=api_key) if api_key else None
 
 # FLASK APP
 app = Flask(__name__)
@@ -164,73 +156,74 @@ def lecture_audio():
         "lecture_audio.html"
     )
 
-# UPLOAD & TRANSCRIBE AUDIO — WITH DETAILED ERROR LOGGING
+# UPLOAD & TRANSCRIBE AUDIO — Uses Groq Whisper Cloud API (no local model needed)
 @app.route("/upload_lecture", methods=["POST"])
 def upload_lecture():
 
     if "audio" not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
-    
+
     audio_file = request.files["audio"]
-    
+
     if audio_file.filename == "":
         return jsonify({"error": "No audio file selected"}), 400
-    
+
+    if not client:
+        return jsonify({"error": "AI service is not configured. Please set GROQ_API_KEY."}), 500
+
     temp_path = None
-    
+
     try:
         # Create uploads folder if it doesn't exist
         if not os.path.exists(app.config["UPLOAD_FOLDER"]):
             os.makedirs(app.config["UPLOAD_FOLDER"])
-        
-        # Generate unique filename with uuid
-        temp_filename = f"temp_audio_{uuid.uuid4().hex}.mp3"
+
+        # Save file temporarily
+        original_ext = os.path.splitext(audio_file.filename)[1] or ".mp3"
+        temp_filename = f"temp_audio_{uuid.uuid4().hex}{original_ext}"
         temp_path = os.path.join(app.config["UPLOAD_FOLDER"], temp_filename)
-        
-        # Save file
-        print(f"📁 Saving file to: {temp_path}")
+
+        print(f"Saving audio to: {temp_path}")
         audio_file.save(temp_path)
-        print(f"✅ File saved! Size: {os.path.getsize(temp_path)} bytes")
-        
-        # Check file size (50MB max)
+
         file_size = os.path.getsize(temp_path)
-        if file_size > 50 * 1024 * 1024:
+        print(f"File saved — size: {file_size} bytes")
+
+        # Groq enforces 25MB for audio transcription
+        if file_size > 25 * 1024 * 1024:
             os.remove(temp_path)
-            return jsonify({"error": "File size exceeds 50MB limit"}), 400
-        
-        # Load Whisper model
-        print("🤖 Loading Whisper model...")
-        model = whisper.load_model("base")
-        print("✅ Model loaded!")
-        
-        # Transcribe (auto-detects language: English, Hindi, Kannada)
-        print("🎙️ Transcribing audio...")
-        result = model.transcribe(temp_path)
-        transcribed_text = result["text"]
-        detected_language = result.get("language", "unknown")
-        print("✅ Transcription successful!")
-        
+            return jsonify({"error": "File too large. Groq Whisper supports up to 25MB."}), 400
+
+        # Transcribe using Groq Whisper cloud API (no local model needed)
+        print("Transcribing via Groq Whisper API...")
+        with open(temp_path, "rb") as f:
+            transcription_response = client.audio.transcriptions.create(
+                model="whisper-large-v3",
+                file=f,
+                response_format="verbose_json"
+            )
+
+        transcribed_text = transcription_response.text
+        detected_language = getattr(transcription_response, "language", "en") or "en"
+        print("Transcription successful!")
+
         # Clean temp file
         if os.path.exists(temp_path):
             os.remove(temp_path)
-            print(f"🗑️ Temp file deleted")
-        
+
         return jsonify({
             "transcription": transcribed_text,
             "language": detected_language,
             "status": "success"
         })
-    
+
     except Exception as e:
-        print(f"\n❌ ERROR IN /upload_lecture:")
-        print(f"Error message: {str(e)}")
+        print(f"ERROR in /upload_lecture: {str(e)}")
         traceback.print_exc()
-        print()
-        
-        # Clean up if error
+
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
-        
+
         return jsonify({"error": str(e)}), 500
 
 # GENERATE SUMMARY FROM TRANSCRIPTION
